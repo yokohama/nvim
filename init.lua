@@ -10,10 +10,15 @@ vim.cmd [[packadd packer.nvim]]
 packer.startup(function(use)
   use 'wbthomason/packer.nvim'
 
+  use 'nvim-tree/nvim-web-devicons' 
+  use 'tjdevries/colorbuddy.nvim'
+  use 'svrana/neosolarized.nvim'
+
   use 'nvim-lualine/lualine.nvim'
 
   use 'nvim-tree/nvim-tree.lua'
-  use 'nvim-tree/nvim-web-devicons' use 'neovim/nvim-lspconfig' use 'williamboman/mason.nvim'
+  use 'neovim/nvim-lspconfig' 
+  use 'williamboman/mason.nvim'
   use 'williamboman/mason-lspconfig.nvim'
 
   use 'onsails/lspkind-nvim'
@@ -27,8 +32,6 @@ packer.startup(function(use)
   use 'windwp/nvim-ts-autotag'
   use 'windwp/nvim-autopairs'
 
-  use 'tjdevries/colorbuddy.nvim'
-  use 'svrana/neosolarized.nvim'
   use 'akinsho/nvim-bufferline.lua'
 
   use 'glepnir/lspsaga.nvim'
