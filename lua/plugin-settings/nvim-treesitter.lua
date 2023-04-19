@@ -2,14 +2,6 @@ local status, ts = pcall(require, "nvim-treesitter.configs")
 if (not status) then return end
 
 ts.setup {
-  highlight = {
-    enable = true,
-    disable = {},
-  },
-  indent = {
-    enable = true,
-    disable = {},
-  },
   ensure_installed = {
     "tsx",
     "toml",
@@ -19,14 +11,25 @@ ts.setup {
     "yaml",
     "css",
     "html",
+    "lua",
     "ruby",
     "python",
-    "lua"
+    "javascript"
+  },
+
+  highlight = {
+    enable = false, -- ハイライトを無効にする。これを有効にするとendwiseと干渉する。
+  },
+  indent = {
+    enable = true, 
   },
   autotag = {
-    enable = true,
+    enable = true, 
+  },
+  autopairs = {
+    enable = true, 
   },
 }
 
-local parser_config = require "nvim-treesitter.parsers".get_parser_configs()
-parser_config.tsx.filetype_to_parsername = { "javascript", "typescript.tsx" }
+--local parser_config = require "nvim-treesitter.parsers".get_parser_configs()
+--parser_config.tsx.filetype_to_parsername = { "javascript", "typescript.tsx" }

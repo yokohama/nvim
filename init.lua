@@ -28,6 +28,7 @@ packer.startup(function(use)
   use 'hrsh7th/nvim-cmp'
 
   use 'nvim-treesitter/nvim-treesitter'
+  use 'tpope/vim-endwise'
 
   use 'windwp/nvim-ts-autotag'
   use 'windwp/nvim-autopairs'
@@ -35,6 +36,10 @@ packer.startup(function(use)
   use 'akinsho/nvim-bufferline.lua'
 
   use 'glepnir/lspsaga.nvim'
+
+  use {"akinsho/toggleterm.nvim", tag = '*', config = function()
+    require("toggleterm").setup()
+  end}
 end)
 
 -- Set the leader key to Space
@@ -49,8 +54,23 @@ vim.opt.winblend = 30
 vim.opt.pumblend = 80
 vim.opt.cursorline = true
 
+-- インデント
+vim.cmd [[
+augroup MyAutoCmd
+  autocmd!
+  autocmd FileType python setlocal tabstop=4 shiftwidth=4 softtabstop=4 expandtab
+  autocmd FileType go setlocal tabstop=4 shiftwidth=4 softtabstop=4 noexpandtab
+  autocmd FileType javascript setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
+  autocmd FileType html setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
+  autocmd FileType ruby setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
+  autocmd FileType lua setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
+augroup END
+]]
+
+
 -- Load Plugins
 require('plugin-settings/color')
+require("plugin-settings/nvim-web-devicons")
 require('plugin-settings/nvim-tree')
 require('plugin-settings/nvim-lualine')
 require('plugin-settings/lsp')
