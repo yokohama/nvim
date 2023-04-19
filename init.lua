@@ -67,7 +67,6 @@ augroup MyAutoCmd
 augroup END
 ]]
 
-
 -- Load Plugins
 require('plugin-settings/color')
 require("plugin-settings/nvim-web-devicons")
