@@ -37,9 +37,14 @@ packer.startup(function(use)
 
   use 'glepnir/lspsaga.nvim'
 
+  --use 'akinsho/toggleterm.nvim'
   use {"akinsho/toggleterm.nvim", tag = '*', config = function()
-    require("toggleterm").setup()
-  end}
+  require("toggleterm").setup()
+end}
+
+  use 'jose-elias-alvarez/null-ls.nvim'
+
+  use 'github/copilot.vim'
 end)
 
 -- Set the leader key to Space
@@ -58,15 +63,15 @@ vim.opt.cursorline = true
 vim.cmd [[
 augroup MyAutoCmd
   autocmd!
-  autocmd FileType python setlocal tabstop=4 shiftwidth=4 softtabstop=4 expandtab
-  autocmd FileType go setlocal tabstop=4 shiftwidth=4 softtabstop=4 noexpandtab
+  autocmd FileType python     setlocal tabstop=4 shiftwidth=4 softtabstop=4 expandtab
+  autocmd FileType go         setlocal tabstop=4 shiftwidth=4 softtabstop=4 noexpandtab
   autocmd FileType javascript setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
-  autocmd FileType html setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
-  autocmd FileType ruby setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
-  autocmd FileType lua setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
+  autocmd FileType html       setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
+  autocmd FileType ruby       setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
+  autocmd FileType lua        setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
+  autocmd FileType json       setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
 augroup END
 ]]
-
 
 -- Load Plugins
 require('plugin-settings/color')
@@ -75,9 +80,10 @@ require('plugin-settings/nvim-tree')
 require('plugin-settings/nvim-lualine')
 require('plugin-settings/lsp')
 require('plugin-settings/mason')
-require('plugin-settings/cmp')
-require('plugin-settings/nvim-treesitter')
+require('plugin-settings/cmp') 
+--require('plugin-settings/nvim-treesitter') --あまりつかってない
 require('plugin-settings/auto-tag-pairs')
 require('plugin-settings/nvim-bufferline')
 require('plugin-settings/lspsaga')
-require('plugin-settings/tggleterm')
+require('plugin-settings/null-ls')
+require('plugin-settings/tggleterm') 
