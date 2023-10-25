@@ -8,7 +8,8 @@ local nvim_lsp = require('lspconfig')
 local servers = { 
   'solargraph', 
   'tsserver',
-  'pylsp'
+  'pylsp',
+  'clangd'
 }
 for _, lsp in ipairs(servers) do
   nvim_lsp[lsp].setup {
@@ -19,8 +20,6 @@ for _, lsp in ipairs(servers) do
       solargraph = {
         diagnostics = false
       },
-      pylsp = {
-      }
     }
   }
 end

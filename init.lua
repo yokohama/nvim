@@ -39,16 +39,21 @@ packer.startup(function(use)
 
   --use 'akinsho/toggleterm.nvim'
   use {"akinsho/toggleterm.nvim", tag = '*', config = function()
-  require("toggleterm").setup()
-end}
+    require("toggleterm").setup()
+  end}
 
-  use 'jose-elias-alvarez/null-ls.nvim'
+  use "lukas-reineke/indent-blankline.nvim"
+
+  --use 'jose-elias-alvarez/null-ls.nvim'
 
   use 'github/copilot.vim'
 end)
 
 -- Set the leader key to Space
 vim.g.mapleader = ','
+
+-- クリップボード
+vim.opt.clipboard:append{'unnamedplus'}
 
 -- ソースコード全体を選択し、クリップボードにコピーするキーマップ
 vim.api.nvim_set_keymap('n', '<leader>yc', 'ggVG"+y', {noremap = true, silent = true})
@@ -70,6 +75,7 @@ augroup MyAutoCmd
   autocmd FileType ruby       setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
   autocmd FileType lua        setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
   autocmd FileType json       setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
+  autocmd FileType c          setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
 augroup END
 ]]
 
@@ -85,5 +91,6 @@ require('plugin-settings/cmp')
 require('plugin-settings/auto-tag-pairs')
 require('plugin-settings/nvim-bufferline')
 require('plugin-settings/lspsaga')
-require('plugin-settings/null-ls')
+--require('plugin-settings/null-ls')
 require('plugin-settings/tggleterm') 
+require('plugin-settings/indent-blankline') 
