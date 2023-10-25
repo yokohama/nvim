@@ -24,4 +24,4 @@ vim.api.nvim_set_keymap('n', '<C-l>', ':wincmd l<CR>', {noremap = true, silent =
 vim.api.nvim_set_keymap('n', '<C-j>', ':wincmd j<CR>', {noremap = true, silent = true})
 vim.api.nvim_set_keymap('n', '<C-k>', ':wincmd k<CR>', {noremap = true, silent = true})
 
-vim.cmd [[autocmd VimEnter * NvimTreeOpen]]
+-- vim.cmd [[autocmd VimEnter * NvimTreeOpen]]
