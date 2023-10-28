@@ -20,7 +20,7 @@ require("nvim-tree").setup({
 
 vim.api.nvim_set_keymap('n', '<leader>n', ':NvimTreeToggle<CR>', {noremap = true, silent = true})
 
-local hostname = vim.fn.system('hostname')
+local hostname = vim.fn.system('hostname'):gsub("\n", "")
 
 if hostname == "sun" then
   vim.api.nvim_set_keymap('n', '<C-h>', ':wincmd h<CR>', {noremap = true, silent = true})
