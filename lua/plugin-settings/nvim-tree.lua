@@ -30,10 +30,10 @@ if hostname == "sun" then
   vim.api.nvim_set_keymap('n', '<C-k>', ':wincmd k<CR>', {noremap = true, silent = true})
 -- Thinkpad
 elseif hostname == "thinkpad" then
-  vim.api.nvim_set_keymap('n', '<M-h>', ':wincmd h<CR>', {noremap = true, silent = true})
-  vim.api.nvim_set_keymap('n', '<M-l>', ':wincmd l<CR>', {noremap = true, silent = true})
-  vim.api.nvim_set_keymap('n', '<M-j>', ':wincmd j<CR>', {noremap = true, silent = true})
-  vim.api.nvim_set_keymap('n', '<M-k>', ':wincmd k<CR>', {noremap = true, silent = true})
+  vim.api.nvim_set_keymap('n', 'H', ':wincmd h<CR>', {noremap = true, silent = true})
+  vim.api.nvim_set_keymap('n', 'L', ':wincmd l<CR>', {noremap = true, silent = true})
+  vim.api.nvim_set_keymap('n', 'J', ':wincmd j<CR>', {noremap = true, silent = true})
+  vim.api.nvim_set_keymap('n', 'K', ':wincmd k<CR>', {noremap = true, silent = true})
 end
 
 -- vim.cmd [[autocmd VimEnter * NvimTreeOpen]]
