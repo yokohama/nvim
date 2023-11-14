@@ -47,6 +47,8 @@ packer.startup(function(use)
   --use 'jose-elias-alvarez/null-ls.nvim'
 
   use 'github/copilot.vim'
+
+  use 'maxmellon/vim-jsx-pretty'
 end)
 
 -- Set the leader key to Space
@@ -66,9 +68,9 @@ vim.opt.cursorline = true
 
 -- インデント
 vim.cmd [[
-augroup MyAutoCmd
+  augroup MyAutoCmd
   autocmd!
-  autocmd FileType python     setlocal tabstop=4 shiftwidth=4 softtabstop=4 expandtab
+  autocmd FileType python     setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
   autocmd FileType go         setlocal tabstop=4 shiftwidth=4 softtabstop=4 noexpandtab
   autocmd FileType javascript setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
   autocmd FileType html       setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
@@ -76,10 +78,13 @@ augroup MyAutoCmd
   autocmd FileType lua        setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
   autocmd FileType json       setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
   autocmd FileType c          setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
+  autocmd FileType typescript setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
 augroup END
 ]]
 
 -- Load Plugins
+-- ダメ require('plugin-settings/auto-tag-pairs')
+-- 元からコメント require('plugin-settings/null-ls')
 require('plugin-settings/color')
 require("plugin-settings/nvim-web-devicons")
 require('plugin-settings/nvim-tree')
@@ -87,10 +92,8 @@ require('plugin-settings/nvim-lualine')
 require('plugin-settings/lsp')
 require('plugin-settings/mason')
 require('plugin-settings/cmp') 
-require('plugin-settings/nvim-treesitter')
-require('plugin-settings/auto-tag-pairs')
 require('plugin-settings/nvim-bufferline')
 require('plugin-settings/lspsaga')
-----require('plugin-settings/null-ls')
 require('plugin-settings/tggleterm') 
 require('plugin-settings/indent-blankline') 
+require('plugin-settings/nvim-treesitter')

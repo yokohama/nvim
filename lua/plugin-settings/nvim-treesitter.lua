@@ -3,9 +3,7 @@ if (not status) then return end
 
 ts.setup {
   ensure_installed = {
-    "tsx",
-    "toml",
-    "fish",
+--    "tsx",
     "php",
     "json",
     "yaml",
@@ -14,22 +12,23 @@ ts.setup {
     "lua",
     "ruby",
     "python",
-    "javascript"
+    "javascript",
+--   "typescript",
   },
 
   highlight = {
-    enable = false, -- ハイライトを無効にする。これを有効にするとendwiseと干渉する。
+    enable = true,
   },
   indent = {
-    enable = true, 
+    enable = false, -- jsxがぶっこわれる。タブが複数勝手に入る。
   },
   autotag = {
-    enable = true, 
+    enable = false, -- うざい 
   },
   autopairs = {
-    enable = true, 
+    enable = false, -- うざい 
   },
 }
 
---local parser_config = require "nvim-treesitter.parsers".get_parser_configs()
+local parser_config = require "nvim-treesitter.parsers".get_parser_configs()
 --parser_config.tsx.filetype_to_parsername = { "javascript", "typescript.tsx" }
