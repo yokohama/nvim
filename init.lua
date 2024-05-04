@@ -88,7 +88,7 @@ vim.cmd [[
 augroup END
 ]]
 
-vim.g.python3_host_prog = "$HOME/home/banister/.pyenv/shims/python"
+vim.g.python3_host_prog = "$HOME/.pyenv/shims/python"
 
 -- Load Plugins
 require('plugin-settings/nvim-tree')
