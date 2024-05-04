@@ -1,3 +1,12 @@
+--
+-- # よく使うショートカット
+-- 1. github        : , + lg
+-- 2. LSP(明表示)   : , + gp
+-- 3. 全文コピー    : , + yc
+-- 4. 行数指定コピー: , + 10 + y
+-- 5. nvintree      : ,n
+--
+
 local status, packer = pcall(require, 'packer')
 
 if (not status) then
@@ -8,60 +17,56 @@ end
 vim.cmd [[packadd packer.nvim]]
 
 packer.startup(function(use)
+  -- パッケージ管理
   use 'wbthomason/packer.nvim'
 
-  use 'nvim-tree/nvim-web-devicons' 
-  use 'tjdevries/colorbuddy.nvim'
-  use 'svrana/neosolarized.nvim'
-
+  -- ファイラー、ナビゲーター
+  use 'nvim-tree/nvim-tree.lua'
+  use 'nvim-tree/nvim-web-devicons'
   use 'nvim-lualine/lualine.nvim'
 
-  use 'nvim-tree/nvim-tree.lua'
-  use 'neovim/nvim-lspconfig' 
+  -- カラー
+  --use 'svrana/neosolarized.nvim'
+  --use 'tjdevries/colorbuddy.nvim'
+
+  -- プログラミング、ナビゲーター
+  use "lukas-reineke/indent-blankline.nvim"
+  --use 'github/copilot.vim'
+
+  -- LSP
+  use 'neovim/nvim-lspconfig'
   use 'williamboman/mason.nvim'
   use 'williamboman/mason-lspconfig.nvim'
+  use "hrsh7th/nvim-cmp"
+  use "hrsh7th/cmp-nvim-lsp"
+  use "hrsh7th/vim-vsnip"
+  --use 'nvim-treesitter/nvim-treesitter' 上記の組合せで十分
 
-  use 'onsails/lspkind-nvim'
-  use 'L3MON4D3/LuaSnip'
-  use 'hrsh7th/cmp-nvim-lsp'
-  use 'hrsh7th/cmp-buffer'
-  use 'hrsh7th/nvim-cmp'
 
-  use 'nvim-treesitter/nvim-treesitter'
-  use 'tpope/vim-endwise'
-
-  use 'windwp/nvim-ts-autotag'
-  use 'windwp/nvim-autopairs'
-
-  use 'akinsho/nvim-bufferline.lua'
-
-  use 'glepnir/lspsaga.nvim'
-
-  --use 'akinsho/toggleterm.nvim'
   use {"akinsho/toggleterm.nvim", tag = '*', config = function()
     require("toggleterm").setup()
   end}
 
-  use "lukas-reineke/indent-blankline.nvim"
-
-  --use 'jose-elias-alvarez/null-ls.nvim'
-
-  use 'github/copilot.vim'
-
-  use 'maxmellon/vim-jsx-pretty'
+  -- 使いたいが上記LSPと入れると動かなくなるのでコメント
+  -- use {
+  --  "windwp/nvim-autopairs",
+  --   event = "InsertEnter",
+  --  config = function()
+  --    require("nvim-autopairs").setup {}
+  --  end
+  --}
 end)
 
 -- Set the leader key to Space
 vim.g.mapleader = ','
 
 -- クリップボード
-vim.opt.clipboard:append{'unnamedplus'}
+vim.opt.clipboard = "unnamedplus"
 
--- ソースコード全体を選択し、クリップボードにコピーするキーマップ
+-- , + yc で、全テキストをクリップボードにコピーする
 vim.api.nvim_set_keymap('n', '<leader>yc', 'ggVG"+y', {noremap = true, silent = true})
 
 vim.opt.number = true
---vim.opt.termguicolors = true
 vim.opt.winblend = 30
 vim.opt.pumblend = 80
 vim.opt.cursorline = true
@@ -70,30 +75,26 @@ vim.opt.cursorline = true
 vim.cmd [[
   augroup MyAutoCmd
   autocmd!
-  autocmd FileType python     setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
-  autocmd FileType go         setlocal tabstop=4 shiftwidth=4 softtabstop=4 noexpandtab
+  autocmd FileType go         setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
   autocmd FileType javascript setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
+  autocmd FileType typescript setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
   autocmd FileType html       setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
   autocmd FileType ruby       setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
+  autocmd FileType python     setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
   autocmd FileType lua        setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
   autocmd FileType json       setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
   autocmd FileType c          setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
-  autocmd FileType typescript setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
+  autocmd FileType cpp        setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
 augroup END
 ]]
 
+vim.g.python3_host_prog = "$HOME/home/banister/.pyenv/shims/python"
+
 -- Load Plugins
--- ダメ require('plugin-settings/auto-tag-pairs')
--- 元からコメント require('plugin-settings/null-ls')
-require('plugin-settings/color')
-require("plugin-settings/nvim-web-devicons")
 require('plugin-settings/nvim-tree')
+require('plugin-settings/tggleterm')
+require('plugin-settings/indent-blankline')
 require('plugin-settings/nvim-lualine')
-require('plugin-settings/lsp')
 require('plugin-settings/mason')
-require('plugin-settings/cmp') 
-require('plugin-settings/nvim-bufferline')
-require('plugin-settings/lspsaga')
-require('plugin-settings/tggleterm') 
-require('plugin-settings/indent-blankline') 
-require('plugin-settings/nvim-treesitter')
+require('plugin-settings/cmp')
+require('plugin-settings/lsp')
