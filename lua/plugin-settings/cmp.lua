@@ -16,4 +16,11 @@ cmp.setup({
   experimental = {
     ghost_text = true,
   },
+  require("cmp").setup({
+    window = {
+      completion = {
+        border = "rounded",
+      },
+    }
+  })
 })

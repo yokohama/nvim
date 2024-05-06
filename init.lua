@@ -5,7 +5,6 @@
 -- 3. 全文コピー    : , + yc
 -- 4. 行数指定コピー: , + 10 + y
 -- 5. nvintree      : ,n
---
 
 local status, packer = pcall(require, 'packer')
 
@@ -15,6 +14,7 @@ if (not status) then
 end
 
 vim.cmd [[packadd packer.nvim]]
+
 
 packer.startup(function(use)
   -- パッケージ管理
@@ -98,3 +98,6 @@ require('plugin-settings/nvim-lualine')
 require('plugin-settings/mason')
 require('plugin-settings/cmp')
 require('plugin-settings/lsp')
+
+
+vim.api.nvim_set_hl(0, "CmpNormal", { bg = "#FF0000" })
