@@ -1,10 +1,17 @@
---
--- # よく使うショートカット
--- 1. github        : , + lg
--- 2. LSP(明表示)   : , + gp
--- 3. 全文コピー    : , + yc
--- 4. 行数指定コピー: , + 10 + y
--- 5. nvintree      : ,n
+--[[
+ # よく使うショートカット
+
+ 1. github        : , + lg
+ 2. LSP(表示)   : , + gp
+ 3. 全文コピー    : , + yc
+ 4. 行数指定コピー: , + 10 + y
+ 5. nvintree      : ,n
+ 6. cmpによるレコメンドリストの移動 : Ctr + j or Ctr + k
+]]
+
+
+-- Undefined global `vim`.のワーニングのやっつけ対策
+_G.vim = vim or {}
 
 local status, packer = pcall(require, 'packer')
 
@@ -14,7 +21,6 @@ if (not status) then
 end
 
 vim.cmd [[packadd packer.nvim]]
-
 
 packer.startup(function(use)
   -- パッケージ管理
@@ -34,14 +40,13 @@ packer.startup(function(use)
   --use 'github/copilot.vim'
 
   -- LSP
-  use 'neovim/nvim-lspconfig'
   use 'williamboman/mason.nvim'
   use 'williamboman/mason-lspconfig.nvim'
+  use 'neovim/nvim-lspconfig'
   use "hrsh7th/nvim-cmp"
   use "hrsh7th/cmp-nvim-lsp"
-  use "hrsh7th/vim-vsnip"
+--  use "hrsh7th/vim-vsnip"
   --use 'nvim-treesitter/nvim-treesitter' 上記の組合せで十分
-
 
   use {"akinsho/toggleterm.nvim", tag = '*', config = function()
     require("toggleterm").setup()
@@ -66,6 +71,15 @@ vim.opt.clipboard = "unnamedplus"
 -- , + yc で、全テキストをクリップボードにコピーする
 vim.api.nvim_set_keymap('n', '<leader>yc', 'ggVG"+y', {noremap = true, silent = true})
 
+-- 貼り付けの際、Windowsの^Mを削除(貼付け後Escを押した際に発動)
+vim.api.nvim_create_autocmd("InsertLeave", {
+    pattern = "*",
+    callback = function()
+        vim.cmd([[silent! %s/\r//g]])
+    end
+})
+
+-- ウインド設定
 vim.opt.number = true
 vim.opt.winblend = 30
 vim.opt.pumblend = 80
@@ -96,8 +110,4 @@ require('plugin-settings/tggleterm')
 require('plugin-settings/indent-blankline')
 require('plugin-settings/nvim-lualine')
 require('plugin-settings/mason')
-require('plugin-settings/cmp')
 require('plugin-settings/lsp')
-
-
-vim.api.nvim_set_hl(0, "CmpNormal", { bg = "#FF0000" })
