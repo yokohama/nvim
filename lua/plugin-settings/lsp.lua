@@ -1,8 +1,16 @@
 vim.keymap.set('n', 'gp',  '<cmd>lua vim.lsp.buf.hover()<CR>', {noremap = true, silent = true})
 
 -- Floatウィンドウの背景色を変更
-vim.api.nvim_set_hl(0, "NormalFloat", { bg = "#333333" })
-vim.api.nvim_set_hl(0, "FloatBorder", { bg = "#333333", fg = "#ffffff" })
+vim.api.nvim_set_hl(0, "NormalFloat", { bg = "#1e0a33" })
+vim.api.nvim_set_hl(0, "FloatBorder", { bg = "#1e0a33", fg = "#ffffff" })
+
+-- LSPのホバー表示をカスタマイズ
+vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(
+  vim.lsp.handlers.hover, {
+    -- you can choose in "single", "double", "rounded", "solid", "shadow"
+    border = "rounded"
+  }
+)
 
 -- LSP 設定
 require('lspconfig')['pylsp'].setup {

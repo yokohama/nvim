@@ -9,7 +9,6 @@
  6. cmpによるレコメンドリストの移動 : Ctr + j or Ctr + k
 ]]
 
-
 -- Undefined global `vim`.のワーニングのやっつけ対策
 _G.vim = vim or {}
 
@@ -45,7 +44,7 @@ packer.startup(function(use)
   use 'neovim/nvim-lspconfig'
   use "hrsh7th/nvim-cmp"
   use "hrsh7th/cmp-nvim-lsp"
---  use "hrsh7th/vim-vsnip"
+  use "hrsh7th/vim-vsnip"
   --use 'nvim-treesitter/nvim-treesitter' 上記の組合せで十分
 
   use {"akinsho/toggleterm.nvim", tag = '*', config = function()
