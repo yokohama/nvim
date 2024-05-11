@@ -48,3 +48,28 @@ cmp.setup({
     completion = cmp.config.window.bordered(),
   }
 })
+
+-- クイックリストの設定
+vim.diagnostic.config({
+  virtual_text = false,  -- ソースコード上に直接表示しない
+  signs = true,          -- サインカラムに警告やエラーのアイコンを表示
+  underline = true,      -- 警告やエラーのテキストを下線で表示
+  update_in_insert = false,  -- インサートモード中に診断を更新しない
+  severity_sort = true,  -- 重要度によってソート
+})
+
+vim.cmd([[
+  autocmd BufWritePost,InsertLeave,CursorHold * lua UpdateDiagnosticsAndStay()
+]])
+
+-- 診断を更新しつつカーソルをエディタに留める関数
+function UpdateDiagnosticsAndStay()
+  local current_win = vim.api.nvim_get_current_win()
+  vim.diagnostic.setloclist({open_loclist = false})
+  vim.api.nvim_set_current_win(current_win)
+end
+
+-- vim終了時にロケーションリストも閉じる
+vim.cmd([[
+  autocmd QuitPre * lclose
+]])
