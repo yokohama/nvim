@@ -1,12 +1,14 @@
 --[[
  # よく使うショートカット
-
- 1. github        : , + lg
- 2. LSP(表示)   : , + gp
- 3. 全文コピー    : , + yc
- 4. 行数指定コピー: , + 10 + y
- 5. nvintree      : ,n
- 6. cmpによるレコメンドリストの移動 : Ctr + j or Ctr + k
+ 1. github                          : , + lg
+ 2. LSP(表示)                       : , + gp
+ 3. 全文コピー                      : , + yc
+ 4. 行数指定コピー                  : , + 10 + y
+ 5. nvintree                        : ,n
+ 6. cmpによるレコメンドリストの移動 : C-[j k]
+ 7. 横に画面分割                    : :new
+ 8. 縦に画面分割                    : :vnew
+ 9. 分割した画面の移動              : C-[h j k l]
 ]]
 
 -- Undefined global `vim`.のワーニングのやっつけ対策
@@ -83,6 +85,8 @@ vim.opt.number = true
 vim.opt.winblend = 30
 vim.opt.pumblend = 80
 vim.opt.cursorline = true
+vim.opt.splitbelow = true -- newの際に下に画面を作成
+vim.opt.splitright = true -- vnewの際に右に画面を作成
 
 -- インデント
 vim.cmd [[
