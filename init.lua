@@ -1,14 +1,16 @@
 --[[
  # よく使うショートカット
- 1. github                          : , + lg
- 2. LSP(表示)                       : , + gp
- 3. 全文コピー                      : , + yc
- 4. 行数指定コピー                  : , + 10 + y
- 5. nvintree                        : ,n
- 6. cmpによるレコメンドリストの移動 : C-[j k]
- 7. 横に画面分割                    : :new
- 8. 縦に画面分割                    : :vnew
- 9. 分割した画面の移動              : C-[h j k l]
+  1. github                          : , + lg
+  2. LSP(表示)                       : , + gp
+  3. 全文コピー                      : , + yc
+  4. 行数指定コピー                  : , + 10 + y
+  5. nvintree                        : ,n
+  6. cmpによるレコメンドリストの移動 : C-[j k]
+  7. 横に画面分割                    : :new
+  8. 縦に画面分割                    : :vnew
+  9. 分割した画面の移動              : C-[h j k l]
+ 10. cargo watch                     : WatchCargo
+ 11. クリップボードの貼り付け        : C-V
 ]]
 
 -- Undefined global `vim`.のワーニングのやっつけ対策
@@ -52,15 +54,6 @@ packer.startup(function(use)
   use {"akinsho/toggleterm.nvim", tag = '*', config = function()
     require("toggleterm").setup()
   end}
-
-  -- 使いたいが上記LSPと入れると動かなくなるのでコメント
-  -- use {
-  --  "windwp/nvim-autopairs",
-  --   event = "InsertEnter",
-  --  config = function()
-  --    require("nvim-autopairs").setup {}
-  --  end
-  --}
 end)
 
 -- Set the leader key to Space
@@ -71,22 +64,6 @@ vim.opt.clipboard = "unnamedplus"
 
 -- , + yc で、全テキストをクリップボードにコピーする
 vim.api.nvim_set_keymap('n', '<leader>yc', 'ggVG"+y', {noremap = true, silent = true})
-
--- 貼り付けの際、Windowsの^Mを削除(貼付け後Escを押した際に発動)
-vim.api.nvim_create_autocmd("InsertLeave", {
-    pattern = "*",
-    callback = function()
-        vim.cmd([[silent! %s/\r//g]])
-    end
-})
-
--- ウインド設定
-vim.opt.number = true
-vim.opt.winblend = 30
-vim.opt.pumblend = 80
-vim.opt.cursorline = true
-vim.opt.splitbelow = true -- newの際に下に画面を作成
-vim.opt.splitright = true -- vnewの際に右に画面を作成
 
 -- インデント
 vim.cmd [[
@@ -103,6 +80,7 @@ vim.cmd [[
   autocmd FileType c          setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
   autocmd FileType cpp        setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
   autocmd FileType rust       setlocal tabstop=4 shiftwidth=4 softtabstop=4 expandtab
+  autocmd FileType asm        setlocal tabstop=4 shiftwidth=4 softtabstop=4 expandtab
 augroup END
 ]]
 
@@ -115,3 +93,5 @@ require('plugin-settings/indent-blankline')
 require('plugin-settings/nvim-lualine')
 require('plugin-settings/mason')
 require('plugin-settings/lsp')
+require('plugin-settings/terminal')
+require('plugin-settings/dev-watch')
