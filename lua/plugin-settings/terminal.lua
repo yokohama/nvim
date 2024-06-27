@@ -1,7 +1,7 @@
 -- ウインド設定
 vim.opt.number = true
 vim.opt.winblend = 30
-vim.opt.pumblend = 80
+vim.opt.pumblend = 76
 vim.opt.cursorline = true
 
 -- 画面分割
@@ -22,15 +22,12 @@ vim.api.nvim_create_autocmd("TermOpen", {
 vim.api.nvim_create_user_command('T', function()
     vim.cmd('vnew')
     vim.cmd('terminal')
+
+    local original_window = vim.api.nvim_get_current_win()
+    vim.cmd('wincmd j')  -- 下のウィンドウに移動
+    vim.cmd('10split')
+    vim.cmd('terminal')
+    vim.cmd('wincmd k')  -- 元のターミナルウィンドウに戻る
+    vim.api.nvim_set_current_win(original_window)  -- 元のウィンドウをアクティブにする
     vim.cmd('startinsert')
 end, {})
-
--- Rust用のCargo watchのコマンド定義
-vim.api.nvim_create_user_command(
-  'WatchCargo',
-  function()
-    vim.cmd('T')
-    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('cargo make --env-file .env watch\n', true, false, true), 't', false)
-  end,
-  {}
-)
