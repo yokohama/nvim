@@ -1,6 +1,9 @@
 vim.opt.termguicolors = true
 
 require("nvim-tree").setup({
+  view = {
+    width = 20,
+  },
   update_focused_file = {
     enable = true
   },
