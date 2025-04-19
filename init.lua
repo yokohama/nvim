@@ -63,13 +63,14 @@ packer.startup(function(use)
   use "folke/snacks.nvim"
   use "nvim-lua/plenary.nvim"
   use "MunifTanjim/nui.nvim"
+
   use({
-      'MeanderingProgrammer/render-markdown.nvim',
-      after = { 'nvim-treesitter' },
-      requires = { 'nvim-tree/nvim-web-devicons', opt = true },
-      config = function()
-          require('render-markdown').setup({})
-      end,
+    'MeanderingProgrammer/render-markdown.nvim',
+    after = { 'nvim-treesitter' },
+    requires = { 'nvim-tree/nvim-web-devicons', opt = true },
+    config = function()
+      require('render-markdown').setup({})
+    end
   })
 
   use {
@@ -80,11 +81,11 @@ packer.startup(function(use)
       require('avante').setup({
         provider = "claude",
         claude = {
-          model = "claude-3.7-sonnet",
-          memory = {
-            enabled = true,
-            max_tokens = 100000
-          }
+          --model = "claude-3-5-sonnet",
+          --model = "claude-3-opus",
+        },
+        windows = {
+          width = 36
         }
       })
     end
