@@ -24,6 +24,7 @@ require('lspconfig')['pylsp'].setup {
     }
   }
 }
+require('lspconfig').solargraph.setup {}
 
 -- nvim-cmp 設定
 local cmp = require("cmp")

@@ -35,8 +35,6 @@ packer.startup(function(use)
   use 'nvim-lualine/lualine.nvim'
 
   -- カラー
-  --use 'svrana/neosolarized.nvim'
-  --use 'tjdevries/colorbuddy.nvim'
   use 'morhetz/gruvbox'
   vim.cmd [[colorscheme gruvbox]]
 
@@ -51,38 +49,68 @@ packer.startup(function(use)
   use "hrsh7th/nvim-cmp"
   use "hrsh7th/cmp-nvim-lsp"
   use "hrsh7th/vim-vsnip"
-  --use 'nvim-treesitter/nvim-treesitter' 上記の組合せで十分
+  use {
+    "nvim-treesitter/nvim-treesitter",
+    run = ":TSUpdate"
+  }
 
-  use {"akinsho/toggleterm.nvim", tag = '*', config = function()
+  use {
+    "akinsho/toggleterm.nvim", tag = '*', config = function()
     require("toggleterm").setup()
   end}
+
+  -- avanteの設定
+  use "folke/snacks.nvim"
+  use "nvim-lua/plenary.nvim"
+  use "MunifTanjim/nui.nvim"
+  use({
+      'MeanderingProgrammer/render-markdown.nvim',
+      after = { 'nvim-treesitter' },
+      requires = { 'nvim-tree/nvim-web-devicons', opt = true },
+      config = function()
+          require('render-markdown').setup({})
+      end,
+  })
+
+  use {
+    'yetone/avante.nvim',
+    branch = 'main',
+    run = 'make',
+    config = function()
+      require('avante').setup({
+        provider = "claude",
+        claude = {
+          model = "claude-3.7-sonnet",
+          memory = {
+            enabled = true,
+            max_tokens = 100000
+          }
+        }
+      })
+    end
+  }
 end)
 
 -- Set the leader key to Space
 vim.g.mapleader = ','
 
--- クリップボード
-vim.opt.clipboard = "unnamedplus"
-
--- , + yc で、全テキストをクリップボードにコピーする
-vim.api.nvim_set_keymap('n', '<leader>yc', 'ggVG"+y', {noremap = true, silent = true})
-
 -- インデント
 vim.cmd [[
   augroup MyAutoCmd
   autocmd!
-  autocmd FileType go         setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
-  autocmd FileType javascript setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
-  autocmd FileType typescript setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
-  autocmd FileType html       setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
-  autocmd FileType ruby       setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
-  autocmd FileType python     setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
-  autocmd FileType lua        setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
-  autocmd FileType json       setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
-  autocmd FileType c          setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
-  autocmd FileType cpp        setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
-  autocmd FileType rust       setlocal tabstop=4 shiftwidth=4 softtabstop=4 expandtab
-  autocmd FileType asm        setlocal tabstop=4 shiftwidth=4 softtabstop=4 expandtab
+  autocmd FileType go              setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
+  autocmd FileType javascript      setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
+  autocmd FileType typescript      setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
+  autocmd FileType typescriptreact setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
+  autocmd FileType html            setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
+  autocmd FileType ruby            setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
+  autocmd FileType python          setlocal tabstop=4 shiftwidth=4 softtabstop=4 expandtab
+  autocmd FileType lua             setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
+  autocmd FileType json            setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
+  autocmd FileType c               setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
+  autocmd FileType cpp             setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
+  autocmd FileType rust            setlocal tabstop=4 shiftwidth=4 softtabstop=4 expandtab
+  autocmd FileType asm             setlocal tabstop=4 shiftwidth=4 softtabstop=4 expandtab
 augroup END
 ]]
 
@@ -101,3 +129,5 @@ require('plugin-settings/mason')
 require('plugin-settings/lsp')
 require('plugin-settings/terminal')
 require('plugin-settings/dev-watch')
+require('plugin-settings/treesitter')
+require('plugin-settings/clipboard')
