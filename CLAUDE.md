@@ -50,10 +50,14 @@
 
 - **nvim-tree**: ファイルエクスプローラ (`<C-n>`でトグル)
 - **treesitter**: 高度な構文解析と構文ハイライト
+  - treesitter-textobjects: JSX/TSXのコンポーネントを操作しやすくする
 - **lsp.lua**: 言語サーバープロトコルによるコード補完と診断
   - Mason: LSPサーバーのパッケージマネージャー
   - nvim-cmp: 補完エンジン
   - vim-vsnip: スニペットエンジン
+- **telescope.nvim**: ファイル検索やシンボル検索を強化
+- **null-ls.nvim**: コード整形やリンティングの統合
+- **trouble.nvim**: 診断情報を見やすく表示
 
 #### UI拡張
 
@@ -63,6 +67,8 @@
 - **indent-blankline**: インデントガイド表示
 - **undo-glow**: Undo履歴の視覚化
 - **smear-cursor**: カーソル移動エフェクト
+- **nvim-autopairs**: 括弧の自動補完
+- **nvim-ts-autotag**: JSX/TSXのタグを自動的に閉じる
 
 #### 特殊機能
 
@@ -73,6 +79,7 @@
   - 見出しの色分け（紫系グラデーション）
   - Avanteファイルタイプにも対応
 - **toggleterm**: 高度なターミナル管理
+- **react-native.lua**: React Native開発環境の強化
 
 ## Claude AI統合
 
@@ -99,9 +106,15 @@ render-markdown.nvimプラグインにより、Markdownファイルの表示が�
 - **特別な設定**:
   - pylsp: E111エラーを無視
   - solargraph: Rubyのサポート
+  - tsserver: TypeScript/JavaScriptのサポート（型ヒントなど）
+  - eslint: コード品質チェック
+  - tailwindcss: CSSフレームワークのサポート
+  - cssls: CSSのサポート
+  - jsonls: JSONのサポート
 - **UI**: 
   - 診断情報は直接テキスト上には表示せず、サインカラムとロケーションリストに表示
   - ホバー表示は紫色の背景と丸い枠線
+  - Trouble.nvimで診断情報を見やすく表示
 
 ## キーマッピング
 
@@ -110,6 +123,18 @@ render-markdown.nvimプラグインにより、Markdownファイルの表示が�
 - `<C-n>`: NvimTreeのトグル
 - `<C-h/j/k/l>`: ウィンドウ間の移動
 - `gp`: LSPのホバー情報表示
+- `<leader>xx`: Troubleのトグル
+- `<leader>xw`: ワークスペース診断のトグル
+- `<leader>xd`: ドキュメント診断のトグル
+- `<leader>ff`: ファイル検索（Telescope）
+- `<leader>fg`: テキスト検索（Telescope）
+- `<leader>fb`: バッファ検索（Telescope）
+- `<leader>fs`: ドキュメントシンボル検索（Telescope）
+- `<leader>fr`: 参照検索（Telescope）
+- JSX/TSXのテキストオブジェクト:
+  - `aj`/`ij`: JSX要素の外側/内側
+  - `]j`/`[j`: 次/前のJSX要素の開始
+  - `]J`/`[J`: 次/前のJSX要素の終了
 
 ## 初期化プロセス
 
