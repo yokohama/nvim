@@ -5,7 +5,11 @@ return {
     cmd = "Mason",
     event = "BufReadPre",
     config = function()
-      require('mason').setup()
+      require('mason').setup({
+        ui = {
+          check_outdated_packages_on_open = true,
+        }
+      })
     end
   },
 
@@ -19,15 +23,16 @@ return {
     },
     event = "BufReadPre",
     config = function()
-      -- React Native開発に必要なLSPサーバーを設定
+      -- mason-lspconfigの設定 - lspconfig名を指定
       require('mason-lspconfig').setup({
         ensure_installed = {
-          "tsserver",           -- TypeScript/JavaScript
-          "eslint",             -- ESLint
-          "tailwindcss",        -- Tailwind CSS
+          "ts_ls",  -- TypeScript/JavaScript
+          "eslint",                  -- ESLint
+          "tailwindcss", -- Tailwind CSS
           "cssls",              -- CSS
           "jsonls",             -- JSON
-        }
+        },
+        automatic_installation = true,
       })
 
       require('mason-lspconfig').setup_handlers({ function(server)
@@ -51,7 +56,7 @@ return {
         end
 
         -- tsserverの特別な設定
-        if server == 'tsserver' then
+        if server == 'ts_ls' then
           opt.settings = {
             typescript = {
               inlayHints = {

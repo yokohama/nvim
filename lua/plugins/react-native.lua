@@ -102,11 +102,15 @@ return {
             filetypes = {
               "javascript", "typescript", "javascriptreact", "typescriptreact"
             },
+            command = "eslint_d", -- グローバルにインストールしたeslint_dを使用
+            prefer_local = "node_modules/.bin", -- プロジェクトローカルのeslint_dを優先
           }),
           null_ls.builtins.code_actions.eslint_d.with({
             filetypes = {
               "javascript", "typescript", "javascriptreact", "typescriptreact"
             },
+            command = "eslint_d", -- グローバルにインストールしたeslint_dを使用
+            prefer_local = "node_modules/.bin", -- プロジェクトローカルのeslint_dを優先
           }),
         },
         -- 保存時に自動的にフォーマット
