@@ -1,19 +1,9 @@
 return {
-  -- Mason: パッケージマネージャー
   {
     "williamboman/mason.nvim",
-    cmd = "Mason",
+    opts = {},
     event = "BufReadPre",
-    config = function()
-      require('mason').setup({
-        ui = {
-          check_outdated_packages_on_open = true,
-        }
-      })
-    end
   },
-
-  -- Mason-lspconfig: MasonとLSPの連携
   {
     "williamboman/mason-lspconfig.nvim",
     dependencies = {
@@ -23,178 +13,139 @@ return {
     },
     event = "BufReadPre",
     config = function()
-      -- mason-lspconfigの設定 - lspconfig名を指定
       require('mason-lspconfig').setup({
-        ensure_installed = {
-          "ts_ls",  -- TypeScript/JavaScript
-          "eslint",                  -- ESLint
-          "tailwindcss", -- Tailwind CSS
-          "cssls",              -- CSS
-          "jsonls",             -- JSON
-        },
-        automatic_installation = true,
+        ensure_installed = { "ts_ls", "eslint", "tailwindcss", "cssls", "jsonls", "pylsp" },
+        automatic_installation = false,
       })
-
-      require('mason-lspconfig').setup_handlers({ function(server)
-        local opt = {
-          capabilities = require('cmp_nvim_lsp').default_capabilities(
-            vim.lsp.protocol.make_client_capabilities()
-          )
-        }
-
-        -- pylspの特別な設定
-        if server == 'pylsp' then
-          opt.settings = {
-            pylsp = {
-              plugins = {
-                pycodestyle = {
-                  ignore = {'E111'},
-                }
-              }
-            }
-          }
-        end
-
-        -- tsserverの特別な設定
-        if server == 'ts_ls' then
-          opt.settings = {
-            typescript = {
-              inlayHints = {
-                includeInlayParameterNameHints = 'all',
-                includeInlayParameterNameHintsWhenArgumentMatchesName = false,
-                includeInlayFunctionParameterTypeHints = true,
-                includeInlayVariableTypeHints = true,
-                includeInlayPropertyDeclarationTypeHints = true,
-                includeInlayFunctionLikeReturnTypeHints = true,
-                includeInlayEnumMemberValueHints = true,
-              },
-            },
-            javascript = {
-              inlayHints = {
-                includeInlayParameterNameHints = 'all',
-                includeInlayParameterNameHintsWhenArgumentMatchesName = false,
-                includeInlayFunctionParameterTypeHints = true,
-                includeInlayVariableTypeHints = true,
-                includeInlayPropertyDeclarationTypeHints = true,
-                includeInlayFunctionLikeReturnTypeHints = true,
-                includeInlayEnumMemberValueHints = true,
-              },
-            },
-          }
-        end
-
-        -- eslintの特別な設定
-        if server == 'eslint' then
-          opt.settings = {
-            packageManager = 'npm',
-            format = { enable = true },
-            codeActionOnSave = { enable = true, mode = "all" },
-            workingDirectories = { mode = "auto" },
-          }
-        end
-
-        require('lspconfig')[server].setup(opt)
-      end })
-
-      -- solargraphの明示的な設定
-      require('lspconfig').solargraph.setup {}
     end
   },
-
-  -- nvim-lspconfig: LSPの設定
   {
     "neovim/nvim-lspconfig",
+    dependencies = { "hrsh7th/cmp-nvim-lsp" },
     event = "BufReadPre",
-    dependencies = {
-      "hrsh7th/cmp-nvim-lsp",
-    },
     config = function()
-      -- LSPのキーマッピング
-      vim.keymap.set('n', 'gp', '<cmd>lua vim.lsp.buf.hover()<CR>', {noremap = true, silent = true})
-
-      -- Floatウィンドウの背景色を変更
-      vim.api.nvim_set_hl(0, "NormalFloat", { bg = "#1e0a33" })
-      vim.api.nvim_set_hl(0, "FloatBorder", { bg = "#1e0a33", fg = "#ffffff" })
-
-      -- LSPのホバー表示をカスタマイズ
-      vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(
-        vim.lsp.handlers.hover, {
-          -- you can choose in "single", "double", "rounded", "solid", "shadow"
-          border = "rounded"
+      local capabilities = require('cmp_nvim_lsp').default_capabilities()
+      
+      vim.lsp.config('ts_ls', {
+        capabilities = capabilities,
+        settings = {
+          typescript = {
+            inlayHints = {
+              includeInlayParameterNameHints = 'all',
+              includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+              includeInlayFunctionParameterTypeHints = true,
+              includeInlayVariableTypeHints = true,
+              includeInlayPropertyDeclarationTypeHints = true,
+              includeInlayFunctionLikeReturnTypeHints = true,
+              includeInlayEnumMemberValueHints = true,
+            }
+          },
+          javascript = {
+            inlayHints = {
+              includeInlayParameterNameHints = 'all',
+              includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+              includeInlayFunctionParameterTypeHints = true,
+              includeInlayVariableTypeHints = true,
+              includeInlayPropertyDeclarationTypeHints = true,
+              includeInlayFunctionLikeReturnTypeHints = true,
+              includeInlayEnumMemberValueHints = true,
+            }
+          }
         }
-      )
-
-      -- クイックリストの設定
-      vim.diagnostic.config({
-        virtual_text = false,  -- ソースコード上に直接表示しない
-        signs = true,          -- サインカラムに警告やエラーのアイコンを表示
-        underline = true,      -- 警告やエラーのテキストを下線で表示
-        update_in_insert = false,  -- インサートモード中に診断を更新しない
-        severity_sort = true,  -- 重要度によってソート
       })
 
-      vim.cmd([[
-        autocmd BufWritePost,InsertLeave,CursorHold * lua UpdateDiagnosticsAndStay()
-      ]])
+      vim.lsp.config('eslint', {
+        capabilities = capabilities,
+        settings = {
+          codeAction = {
+            disableRuleComment = { enable = true, location = "separateLine" },
+            showDocumentation = { enable = true }
+          },
+          codeActionOnSave = { enable = false, mode = "all" },
+          experimental = { useFlatConfig = false },
+          format = true,
+          nodePath = "",
+          onIgnoredFiles = "off",
+          problems = { shortenToSingleLine = false },
+          quiet = false,
+          rulesCustomizations = {},
+          run = "onType",
+          useESLintClass = false,
+          validate = "on",
+          workingDirectory = { mode = "location" }
+        }
+      })
 
-      -- 診断を更新しつつカーソルをエディタに留める関数
-      _G.UpdateDiagnosticsAndStay = function()
-        local current_win = vim.api.nvim_get_current_win()
-        vim.diagnostic.setloclist({open_loclist = false})
-        vim.api.nvim_set_current_win(current_win)
-      end
+      vim.lsp.config('tailwindcss', { capabilities = capabilities })
+      vim.lsp.config('cssls', { capabilities = capabilities })
+      vim.lsp.config('jsonls', { capabilities = capabilities })
+      vim.lsp.config('pylsp', {
+        capabilities = capabilities,
+        settings = { pylsp = { plugins = { pycodestyle = { ignore = {'E111'} } } } }
+      })
+      vim.lsp.config('solargraph', { capabilities = capabilities })
 
-      -- vim終了時にロケーションリストも閉じる
-      vim.cmd([[
-        autocmd QuitPre * lclose
-      ]])
+      vim.diagnostic.config({
+        virtual_text = {
+          prefix = "●",
+          spacing = 2,
+        },
+        signs = {
+          text = {
+            [vim.diagnostic.severity.ERROR] = "❌",
+            [vim.diagnostic.severity.WARN] = "⚠️",
+            [vim.diagnostic.severity.HINT] = "💡",
+            [vim.diagnostic.severity.INFO] = "ℹ️",
+          }
+        },
+        underline = true,
+        update_in_insert = false,
+        severity_sort = true,
+      })
+
+      vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded" })
+      vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded" })
     end
   },
-
-  -- cmp-nvim-lsp: LSP補完のためのソース
-  {
-    "hrsh7th/cmp-nvim-lsp",
-    event = "InsertEnter",
-  },
-
-  -- vim-vsnip: スニペットエンジン
-  {
-    "hrsh7th/vim-vsnip",
-    event = "InsertEnter",
-  },
-
-  -- nvim-cmp: 補完エンジン
   {
     "hrsh7th/nvim-cmp",
-    event = "InsertEnter",
     dependencies = {
       "hrsh7th/cmp-nvim-lsp",
+      "hrsh7th/cmp-buffer",
+      "hrsh7th/cmp-path",
+      "hrsh7th/cmp-cmdline",
+      "hrsh7th/cmp-vsnip",
       "hrsh7th/vim-vsnip",
     },
+    event = "InsertEnter",
     config = function()
-      local cmp = require("cmp")
-
+      local cmp = require('cmp')
       cmp.setup({
-        snippet = {
-          expand = function(args)
-            vim.fn["vsnip#anonymous"](args.body)
-          end,
-        },
+        snippet = { expand = function(args) vim.fn["vsnip#anonymous"](args.body) end },
         mapping = cmp.mapping.preset.insert({
-          ["<C-k>"] = cmp.mapping.select_prev_item(),
-          ["<C-j>"] = cmp.mapping.select_next_item(),
-          ["<CR>"] = cmp.mapping.confirm({ select = true }),
+          ['<C-b>'] = cmp.mapping.scroll_docs(-4),
+          ['<C-f>'] = cmp.mapping.scroll_docs(4),
+          ['<C-Space>'] = cmp.mapping.complete(),
+          ['<C-e>'] = cmp.mapping.abort(),
+          ['<CR>'] = cmp.mapping.confirm({ select = true }),
         }),
-        sources = {
-          { name = "nvim_lsp" },
-        },
-        experimental = {
-          ghost_text = true,
-        },
-        window = {
-          completion = cmp.config.window.bordered(),
-        }
+        sources = cmp.config.sources({
+          { name = 'nvim_lsp' },
+          { name = 'vsnip' },
+        }, {
+          { name = 'buffer' },
+        })
+      })
+      cmp.setup.cmdline(':', {
+        mapping = cmp.mapping.preset.cmdline(),
+        sources = cmp.config.sources({{ name = 'path' }}, {{ name = 'cmdline' }})
+      })
+      cmp.setup.cmdline('/', {
+        mapping = cmp.mapping.preset.cmdline(),
+        sources = {{ name = 'buffer' }}
       })
     end
   },
+  { "hrsh7th/vim-vsnip", event = "InsertEnter" },
 }
+

@@ -81,52 +81,6 @@ return {
     end,
   },
 
-  -- コード整形やリンティングの統合
-  {
-    "jose-elias-alvarez/null-ls.nvim",
-    dependencies = { "nvim-lua/plenary.nvim" },
-    event = "BufReadPre",
-    config = function()
-      local null_ls = require("null-ls")
-
-      null_ls.setup({
-        sources = {
-          -- JavaScript/TypeScript
-          null_ls.builtins.formatting.prettier.with({
-            filetypes = {
-              "javascript", "typescript", "javascriptreact", "typescriptreact",
-              "json", "jsonc", "css", "html"
-            },
-          }),
-          null_ls.builtins.diagnostics.eslint_d.with({
-            filetypes = {
-              "javascript", "typescript", "javascriptreact", "typescriptreact"
-            },
-            command = "eslint_d", -- グローバルにインストールしたeslint_dを使用
-            prefer_local = "node_modules/.bin", -- プロジェクトローカルのeslint_dを優先
-          }),
-          null_ls.builtins.code_actions.eslint_d.with({
-            filetypes = {
-              "javascript", "typescript", "javascriptreact", "typescriptreact"
-            },
-            command = "eslint_d", -- グローバルにインストールしたeslint_dを使用
-            prefer_local = "node_modules/.bin", -- プロジェクトローカルのeslint_dを優先
-          }),
-        },
-        -- 保存時に自動的にフォーマット
-        on_attach = function(client, bufnr)
-          if client.supports_method("textDocument/formatting") then
-            vim.api.nvim_create_autocmd("BufWritePre", {
-              buffer = bufnr,
-              callback = function()
-                vim.lsp.buf.format({ bufnr = bufnr })
-              end,
-            })
-          end
-        end,
-      })
-    end,
-  },
 
   -- ファイル検索やシンボル検索を強化
   {

@@ -19,9 +19,7 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 -- プラグイン設定を読み込む
-require("lazy").setup({
-  { import = "plugins" },
-})
+require("lazy").setup("plugins")
 
 -- 基本設定を読み込む
 require("core.options")    -- 基本的なVimオプション

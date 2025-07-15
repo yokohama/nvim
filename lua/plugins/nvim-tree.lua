@@ -23,7 +23,6 @@ return {
 
       if sidebar and sidebar.file_selector then
         sidebar.file_selector:add_selected_file(relative_path)
-        
         -- 通知を表示
         vim.notify("ファイルを追加しました: " .. relative_path, vim.log.levels.INFO)
       end
@@ -37,17 +36,39 @@ return {
       },
       renderer = {
         group_empty = true,
+        -- Gitステータスアイコンの設定
+        icons = {
+          show = {
+            git = true,
+            folder = true,
+            file = true,
+          },
+          glyphs = {
+            git = {
+              unstaged = "⤴",
+              unmerged = "",
+              renamed = "➜",
+              untracked = "+",
+              deleted = "",
+              ignored = "◌",
+            },
+          },
+        },
       },
       filters = {
         dotfiles = false,
       },
+      -- Git統合を有効化
+      git = {
+        enable = true,
+        ignore = false,
+        timeout = 400,
+      },
       -- キーマッピングを追加
       on_attach = function(bufnr)
         local api = require("nvim-tree.api")
-        
         -- デフォルトのキーマッピングを設定
         api.config.mappings.default_on_attach(bufnr)
-        
         -- カスタムキーマッピングを追加
         vim.keymap.set('n', ',a', function()
           local node = api.tree.get_node_under_cursor()
@@ -57,7 +78,6 @@ return {
         end, { buffer = bufnr, desc = "Add to Avante Selected Files" })
       end,
     })
-    
     -- ウィンドウが2以下（NvimTreeとエディタ1つの場合）の時のみ NvimTree を閉じる
     vim.cmd([[
       function! ConditionalNvimTreeClose()
