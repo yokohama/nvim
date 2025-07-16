@@ -13,4 +13,3 @@ vim.keymap.set('n', '<C-k>', '<cmd>wincmd k<CR>', { noremap = true, silent = tru
 vim.keymap.set('n', '<leader>t', ':Toggle<CR>', { noremap = true, silent = true, desc = "Toggle Terminal" })
 
 -- Diagram.nvim は自動でレンダリングするため、手動コマンドは不要
-

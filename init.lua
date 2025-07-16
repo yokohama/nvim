@@ -28,3 +28,19 @@ require("core.clipboard")  -- クリップボード関連の設定
 require("core.indent")     -- インデント関連の設定
 require("core.keymaps")    -- キーマッピング
 require("core.terminal")   -- ターミナル関連の設定
+
+-- Kali Linux環境のみで特定の設定を読み込む
+local function is_kali_linux()
+  local handle = io.popen("uname -a")
+  if handle then
+    local result = handle:read("*a")
+    handle:close()
+    return result:match("kali") ~= nil
+  end
+  return false
+end
+
+-- Kali Linux環境の場合のみ特定の設定を読み込む
+if is_kali_linux() then
+  require("core.kali_specific").setup()
+end
