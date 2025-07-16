@@ -9,13 +9,18 @@ return {
         model = "gpt-4o-mini",
         api_key_env = "OPENAI_API_KEY",
       },
-      claude = { 
+      claude = {
         model = "claude-sonnet-4-20250514",
+        --model = "claude-3-5-sonnet-20241022",
       },
     },
     system_prompt = [[
 - 日本語を使用。
+- 最初に必ず、プロジェクトフォルダにあるCLAUDE.mdを読むこと
     ]],
+    behaviour = {
+      enable_token_counting = true, -- トークンカウントを有効にする
+    },
 
     windows = {
       ---@type "right" | "left" | "top" | "bottom"
