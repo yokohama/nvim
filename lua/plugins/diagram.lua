@@ -2,8 +2,9 @@ return {
   "3rd/diagram.nvim",
   dependencies = {
     "3rd/image.nvim",
+    "nvim-neorg/neorg",
   },
-  ft = { "markdown" }, -- markdownファイルでのみ読み込み
+  ft = { "markdown" },
   config = function()
     -- エラーハンドリングを追加
     local ok, diagram = pcall(require, "diagram")
@@ -14,6 +15,7 @@ return {
     diagram.setup({
       integrations = {
         require("diagram.integrations.markdown"),
+        require("diagram.integrations.neorg"),
       },
       events = {
         render_buffer = { "InsertLeave", "BufWinEnter", "TextChanged" },
@@ -24,8 +26,9 @@ return {
           background = "transparent", -- nil | "transparent" | "white" | "#hex"
           theme = "dark", -- nil | "default" | "dark" | "forest" | "neutral"
           scale = 1,
-          -- CLIオプションを直接指定
-          cli_args = { "--theme", "dark", "--backgroundColor", "transparent" },
+        },
+        plantuml = {
+          charset = nil,
         },
         gnuplot = {
           theme = "dark",

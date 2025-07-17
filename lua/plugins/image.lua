@@ -1,22 +1,10 @@
 return {
   "3rd/image.nvim",
   event = "VeryLazy",
-  dependencies = {
-    {
-      "nvim-treesitter/nvim-treesitter",
-      build = ":TSUpdate",
-      config = function()
-        require("nvim-treesitter.configs").setup({
-          ensure_installed = { "markdown" },
-          highlight = { enable = true },
-        })
-      end,
-    },
-  },
   config = function()
     require("image").setup({
-      backend = "kitty", -- Kitty graphics protocol
-      processor = "magick_cli", -- または "magick_rock" を試す
+      backend = "kitty",
+      processor = "magick_cli",
       integrations = {
         markdown = {
           enabled = true,

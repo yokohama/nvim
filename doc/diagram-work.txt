@@ -1,0 +1,24 @@
+diagram.nvimのplanumlがうまく動かなかったので、ソースを直接修正してむりくり動かしている。
+
+~/.local/share/nvim/lazy/diagram.nvim/lua/diagram/renderers/plantuml.lua
+
+  # pathを無理やり指定
+  --if not vim.fn.executable("plantuml") then error("diagram/plantuml: plantuml not found in PATH") end
+  if not vim.fn.executable("java -jar /opt/plantuml-1.2025.4.jar") then error("diagram/plantuml: plantuml not found in PATH") end
+
+  # 同じく
+  local command_parts = {
+    --"plantuml",
+    "java -jar /opt/plantuml-1.2025.4.jar",
+    "-tpng",
+    "-pipe",
+  }
+
+
+  # エラーも鬱陶しいのでコメント
+      on_exit = function(job_id, exit_code, event)
+        -- local msg = string.format("Job %d exited with code %d.", job_id, exit_code)
+        -- vim.api.nvim_out_write(msg .. "\n")
+        vim.fn.rename(path .. ".new.png", path) -- HACK: rename to remove .new.png
+      end,
+    }

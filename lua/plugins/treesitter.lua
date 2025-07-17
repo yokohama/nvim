@@ -8,7 +8,7 @@ return {
         -- React Native開発用の言語を追加
         "javascript", "typescript", "tsx", "json", "css", "html", "regex", "jsdoc"
       },
-      sync_install = false,
+      sync_install = true,
       auto_install = true,
       highlight = {
         enable = true,
