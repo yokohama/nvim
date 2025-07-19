@@ -1,3 +1,4 @@
+-- 自作した（lua/yokohama/diagram_preview)
 return {
   "3rd/diagram.nvim",
   dependencies = {

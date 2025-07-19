@@ -15,7 +15,7 @@ vim.api.nvim_create_autocmd("TermOpen", {
 -- カスタムコマンド `:T` を作成
 vim.api.nvim_create_user_command('T', function()
     vim.cmd('vnew')
-    vim.cmd('terminal')
+    vim.cmd('terminal env TERM=xterm-kitty $SHELL')
  --   vim.cmd('setlocal winhighlight=Normal:MyTerm1')
 
     local original_window = vim.api.nvim_get_current_win()
