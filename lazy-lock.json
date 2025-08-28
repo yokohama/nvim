@@ -38,5 +38,6 @@
   "toggleterm.nvim": { "branch": "main", "commit": "50ea089fc548917cc3cc16b46a8211833b9e3c7c" },
   "trouble.nvim": { "branch": "main", "commit": "85bedb7eb7fa331a2ccbecb9202d8abba64d37b3" },
   "undo-glow.nvim": { "branch": "main", "commit": "2c2ee5819107eac8662ed693008fe47f91c3f8b1" },
+  "vim-slim": { "branch": "master", "commit": "a0a57f75f20a03d5fa798484743e98f4af623926" },
   "vim-vsnip": { "branch": "master", "commit": "0a4b8419e44f47c57eec4c90df17567ad4b1b36e" }
 }

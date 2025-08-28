@@ -15,6 +15,7 @@ vim.cmd [[
   autocmd FileType cpp             setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
   autocmd FileType rust            setlocal tabstop=4 shiftwidth=4 softtabstop=4 expandtab
   autocmd FileType asm             setlocal tabstop=4 shiftwidth=4 softtabstop=4 expandtab
+  autocmd FileType slim            setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
 augroup END
 ]]
 
