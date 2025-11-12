@@ -1,7 +1,8 @@
 return {
   "3rd/image.nvim",
   name = "image",
-  event = "VeryLazy",
+  --event = "VeryLazy",
+  ft = { "markdown", "vimwiki", "norg" },
   config = function()
     require("image").setup({
       backend = "kitty",

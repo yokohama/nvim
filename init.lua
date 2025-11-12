@@ -45,6 +45,6 @@ if is_kali_linux() then
   require("core.kali_specific").setup()
 end
 
---require("yokohama.diagram_preview").setup()
 --require("yokohama.kitty_window")
 require("yokohama.diagram_preview")
+require("yokohama.clip-paste-img")
