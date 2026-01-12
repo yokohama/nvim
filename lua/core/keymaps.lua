@@ -14,8 +14,3 @@ vim.keymap.set('n', '<leader>t', ':Toggle<CR>', { noremap = true, silent = true,
 
 -- Diagram.nvim は自動でレンダリングするため、手動コマンドは不要
 
--- yokohama original
-vim.keymap.set("n", "<leader>mm", function()
-  require("yokohama.mermaid_preview").show_mermaid_preview()
-end, { desc = "Mermaid プレビュー" })
-

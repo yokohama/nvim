@@ -19,7 +19,11 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 -- プラグイン設定を読み込む
-require("lazy").setup("plugins")
+require("lazy").setup("plugins", {
+    rocks = {
+      enabled = false,
+    },
+})
 
 -- 基本設定を読み込む
 require("core.options")    -- 基本的なVimオプション
@@ -45,6 +49,7 @@ if is_kali_linux() then
   require("core.kali_specific").setup()
 end
 
---require("yokohama.kitty_window")
-require("yokohama.diagram_preview")
-require("yokohama.clip-paste-img")
+-- require("yokohama.kali-preview-diagram")
+require("yokohama.wsl-preview-diagram")
+
+require("yokohama.linux-clip-paste-img")

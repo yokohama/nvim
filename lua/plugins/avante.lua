@@ -1,37 +1,33 @@
 return {
   "yetone/avante.nvim",
   event = "VeryLazy",
-  tag = "v0.0.24",
-  -- https://github.com/yetone/avante.nvim/pull/2185
-  -- で、エラーが報告されているので一旦バージョンを古いものにする。
-  -- 安定したら以下のコメントを外して最新にする。
-  --version = false, -- Never set this value to "*"! Never!
+
   opts = {
-    provider = "claude",
+    provider = "openai",
+
     providers = {
       openai = {
-        model = "gpt-4o-mini",
+        model = "gpt-4o",
         api_key_env = "OPENAI_API_KEY",
-      },
-      claude = {
-        --model = "claude-sonnet-4-20250514",
-        --model = "claude-3-5-sonnet-20241022",
-        -- 同じく安定するまで古いモデルを使用する。
-        model = "claude-3-opus-20240229",
         extra_request_body = {
-          max_tokens = 4096,
+          max_tokens = 1024,
         },
       },
+      -- claude = {
+      --   model = "claude-3-opus-20240229",
+      --   extra_request_body = {
+      --     max_tokens = 1024,
+      --   },
+      -- },
     },
     system_prompt = [[
 - 日本語を使用。
 - 最初に必ず、プロジェクトフォルダにあるCLAUDE.mdを読むこと
     ]],
     behaviour = {
-      enable_token_counting = true, -- トークンカウントを有効にする
+      enable_token_counting = false,
       enable_fastapply = false,
       auto_approve_tool_permissions = {"bash", "replace_in_file"},
-      --enable_streaming = false,
     },
 
     windows = {
