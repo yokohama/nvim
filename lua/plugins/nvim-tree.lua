@@ -77,6 +77,16 @@ return {
           end
         end, { buffer = bufnr, desc = "Add to Avante Selected Files" })
       end,
+
+      actions = {
+        open_file = {
+          quit_on_open = false,
+          window_picker = {
+            enable = false,
+          },
+        },
+      },
+
     })
     -- ウィンドウが2以下（NvimTreeとエディタ1つの場合）の時のみ NvimTree を閉じる
     vim.cmd([[

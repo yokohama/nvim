@@ -9,12 +9,10 @@ local function open_windows_marktext()
     return
   end
 
-  vim.notify(string.format("Image pasted: %s", filepath))
   vim.fn.jobstart({
     "MarkText.exe",
     filepath
   }, { detach = true })
-  vim.notify(string.format("Image pasted: %s", filepath))
 end
 
 vim.api.nvim_create_user_command("PreviewMd", open_windows_marktext, {})
