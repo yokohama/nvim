@@ -52,8 +52,7 @@ end
 -- 独自機能
 -- require("yokohama.preview-diagram-kitty")
 require("yokohama.preview-diagram-wsl")
--- require("yokohama.clip-paste-img-linux")
-require("yokohama.clip-paste-img-wsl")
+require("yokohama.img-paste")
 
 -- アクティブ/非アクティブ window 背景色制御
 local function set_window_background()
