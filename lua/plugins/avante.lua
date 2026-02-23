@@ -3,22 +3,22 @@ return {
   event = "VeryLazy",
 
   opts = {
-    provider = "openai",
+    provider = "claude",
 
     providers = {
-      openai = {
-        model = "gpt-4o",
-        api_key_env = "OPENAI_API_KEY",
-        extra_request_body = {
-          max_tokens = 1024,
-        },
-      },
-      -- claude = {
-      --   model = "claude-3-opus-20240229",
+      -- openai = {
+      --   model = "gpt-4o",
+      --   api_key_env = "OPENAI_API_KEY",
       --   extra_request_body = {
       --     max_tokens = 1024,
       --   },
       -- },
+      claude = {
+        model = "claude-opus-4-6",
+        extra_request_body = {
+          max_tokens = 1024,
+        },
+      },
     },
     system_prompt = [[
 - 日本語を使用。

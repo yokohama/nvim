@@ -1,8 +1,25 @@
 -- ターミナル(:terminal実行時)の設定
-vim.api.nvim_set_keymap('t', '<C-h>', [[<C-\><C-n><C-w>h]], {noremap = true, silent = true})
-vim.api.nvim_set_keymap('t', '<C-j>', [[<C-\><C-n><C-w>j]], {noremap = true, silent = true})
-vim.api.nvim_set_keymap('t', '<C-k>', [[<C-\><C-n><C-w>k]], {noremap = true, silent = true})
-vim.api.nvim_set_keymap('t', '<C-l>', [[<C-\><C-n><C-w>l]], {noremap = true, silent = true})
+-- [元のコード] シンプルなウィンドウ移動
+-- vim.api.nvim_set_keymap('t', '<C-h>', [[<C-\><C-n><C-w>h]], {noremap = true, silent = true})
+-- vim.api.nvim_set_keymap('t', '<C-j>', [[<C-\><C-n><C-w>j]], {noremap = true, silent = true})
+-- vim.api.nvim_set_keymap('t', '<C-k>', [[<C-\><C-n><C-w>k]], {noremap = true, silent = true})
+-- vim.api.nvim_set_keymap('t', '<C-l>', [[<C-\><C-n><C-w>l]], {noremap = true, silent = true})
+
+-- [新コード] マルチターミナル対応版
+local function term_wincmd(dir)
+  return function()
+    local multi_term = package.loaded["yokohama.multi-terminal"]
+    if multi_term and multi_term.is_open() then
+      return  -- マルチターミナルはバッファローカルマッピングに任せる
+    end
+    vim.cmd('stopinsert')
+    vim.cmd('wincmd ' .. dir)
+  end
+end
+vim.keymap.set('t', '<C-h>', term_wincmd('h'), {noremap = true, silent = true})
+vim.keymap.set('t', '<C-j>', term_wincmd('j'), {noremap = true, silent = true})
+vim.keymap.set('t', '<C-k>', term_wincmd('k'), {noremap = true, silent = true})
+vim.keymap.set('t', '<C-l>', term_wincmd('l'), {noremap = true, silent = true})
 
 vim.api.nvim_create_autocmd("TermOpen", {
     pattern = "*",
@@ -11,15 +28,19 @@ vim.api.nvim_create_autocmd("TermOpen", {
 
 -- カスタムコマンド `:T` を作成
 vim.api.nvim_create_user_command('T', function()
-    vim.cmd('vnew')
-    vim.cmd('terminal env TERM=xterm $SHELL')
+    -- NvimTreeを開く
+    vim.cmd('NvimTreeOpen')
 
-    local original_window = vim.api.nvim_get_current_win()
-    vim.cmd('wincmd j')  -- 下のウィンドウに移動
-    vim.cmd('10split')
-    vim.cmd('terminal')
-    vim.cmd('wincmd k')  -- 元のターミナルウィンドウに戻る
-    vim.api.nvim_set_current_win(original_window)  -- 元のウィンドウをアクティブにする
+    -- 編集エリアに移動してから右側にターミナルを作成
+    vim.cmd('wincmd l')
+    vim.cmd('belowright vnew')
+    local term_chan = vim.fn.termopen('env TERM=xterm $SHELL')
+
+    -- claudeコマンドを実行
+    vim.defer_fn(function()
+        vim.fn.chansend(term_chan, 'claude\n')
+    end, 100)
+
     vim.cmd('startinsert')
 end, {})
 

@@ -1,8 +1,8 @@
 return {
   "3rd/image.nvim",
   name = "image",
-  --event = "VeryLazy",
-  ft = { "markdown", "vimwiki", "norg" },
+  event = "VeryLazy",
+  -- ft = { "markdown", "vimwiki", "norg" },
   config = function()
     require("image").setup({
       backend = "kitty",
@@ -29,9 +29,9 @@ return {
           enabled = false,
         },
       },
-      --max_width = 100,
-      --max_height = 12,
-      max_width_window_percentage = nil,
+      max_width = 100,
+      max_height = 30,
+      max_width_window_percentage = 80,
       max_height_window_percentage = 50,
       window_overlap_clear_enabled = false,
       window_overlap_clear_ft_ignore = { "cmp_menu", "cmp_docs", "" },

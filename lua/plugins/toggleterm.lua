@@ -1,15 +1,42 @@
+-- ターミナル定義（唯一のソース）
+local terminal_defs = {
+  { key = "<leader>o", color = "#FFFF00", command = "ors search command", insert = false, title = "ORS", desc = "ORS Terminal" },
+  { key = "<leader>t", color = "#00FF00", command = "", insert = true, title = "Terminal", desc = "Terminal" },
+  { key = "<leader>c", color = "#DA7756", command = "cd $HOME/life-as-code && claude", insert = true, title = "Claude Code", desc = "Claude Code Terminal" },
+  { key = "<leader>h", color = "#FFFFFF", command = "htop", insert = true, title = "htop", desc = "htop Terminal" },
+  { key = "<leader>b", multi = 3, title = "Background", desc = "Background Terminals" },
+}
+
+-- keys配列を自動生成
+local keys = {}
+for _, def in ipairs(terminal_defs) do
+  if def.multi then
+    table.insert(keys, {
+      def.key,
+      string.format("<cmd>lua _multi_terminal(%d)<CR>", def.multi),
+      desc = def.desc,
+    })
+  else
+    table.insert(keys, {
+      def.key,
+      string.format("<cmd>lua _my_toggle('%s', '%s', %s, '%s')<CR>", def.color, def.command, def.insert, def.title),
+      desc = def.desc,
+    })
+  end
+end
+table.insert(keys, { "<leader>lg", "<cmd>lua _lazygit_toggle()<CR>", desc = "Toggle Lazygit" })
+
 return {
   "akinsho/toggleterm.nvim",
   version = "*",
+  event = "VimEnter",
   cmd = { "ToggleTerm" },
-  keys = {
-    { "<leader>lg", "<cmd>lua _lazygit_toggle()<CR>", desc = "Toggle Lazygit" },
-  },
+  keys = keys,
   config = function()
     require("toggleterm").setup({
       -- デフォルト設定
       size = 20,
-      open_mapping = [[<c-\>]],
+      -- open_mapping は手動で設定（multi-terminal対応のため）
       hide_numbers = true,
       shade_filetypes = {},
       shade_terminals = true,
@@ -57,6 +84,79 @@ return {
       end,
     })
 
+    -- カスタムターミナル toggle関数（色、コマンド、インサートモード、タイトルを外部から注入可能）
+    _G._my_toggle = (function()
+      local terminals = {}
+      return function(color, command, insert_mode, title)
+        local key = (color or "") .. (command or "") .. tostring(insert_mode)
+        if not terminals[key] then
+          local hl_name = "MyTermBorder_" .. key:gsub("[^%w]", "_")
+          vim.api.nvim_set_hl(0, hl_name, { fg = color or '#FFFFFF' })
+          terminals[key] = Terminal:new({
+            direction = "float",
+            float_opts = {
+              border = "rounded",
+              width = math.floor(vim.o.columns * 0.9),
+              height = math.floor(vim.o.lines * 0.9),
+              winblend = 34,
+              highlights = {
+                border = hl_name,
+                background = "Normal",
+              },
+            },
+            on_create = function(term)
+              -- 初回作成時のみコマンドを実行
+              if command and command ~= "" then
+                vim.defer_fn(function()
+                  term:send(command)
+                end, 100)
+              end
+            end,
+            on_open = function(term)
+              if insert_mode then
+                vim.cmd("startinsert!")
+              else
+                vim.cmd("stopinsert")
+              end
+            end,
+            on_close = function(term)
+              -- 何もしない
+            end,
+          })
+        end
+        local term = terminals[key]
+        local hl_name = "MyTermBorder_" .. key:gsub("[^%w]", "_")
+        term:toggle()
+        vim.defer_fn(function()
+          if term:is_open() then
+            local win_id = term.window
+            if win_id and vim.api.nvim_win_is_valid(win_id) then
+              vim.api.nvim_win_set_option(win_id, 'winhighlight', 'FloatBorder:' .. hl_name .. ',FloatTitle:' .. hl_name)
+              -- タイトルを設定
+              if title then
+                vim.api.nvim_win_set_config(win_id, {
+                  title = " " .. title .. " ",
+                  title_pos = "center",
+                })
+              end
+            end
+          end
+        end, 100)
+      end
+    end)()
+
+    -- マルチターミナル（横並びfloat）- 別モジュールで実装
+    local multi_term = require("yokohama.multi-terminal")
+
+    -- Ctrl+\をカスタマイズ: multi-terminalが開いていればそれを閉じる
+    vim.keymap.set({'n', 't'}, '<C-\\>', function()
+      if multi_term.is_open() then
+        _G._multi_terminal()
+      else
+        vim.cmd('ToggleTerm')
+      end
+    end, { noremap = true, silent = true, desc = "Toggle terminal" })
+
     -- グローバル関数を定義
     _G._lazygit_toggle = function()
       lazygit:toggle()
@@ -75,6 +175,33 @@ return {
     vim.api.nvim_create_user_command('Toggle', function()
       vim.cmd('ToggleTerm')
     end, {})
+
+    -- 開いているターミナルを順番に切り替える機能
+    local current_index = 0
+
+    _G._cycle_terminals = function()
+      -- 現在開いているターミナルを閉じる
+      if current_index > 0 then
+        local prev = terminal_defs[current_index]
+        _my_toggle(prev.color, prev.command, prev.insert, prev.title)
+      end
+      -- 次のターミナルへ
+      current_index = current_index + 1
+      if current_index > #terminal_defs then
+        current_index = 1
+      end
+      -- 次のターミナルを開く
+      local next_term = terminal_defs[current_index]
+      _my_toggle(next_term.color, next_term.command, next_term.insert, next_term.title)
+    end
+
+    -- ターミナルを順番に切り替え
+    vim.keymap.set('n', '<C-]>', _G._cycle_terminals, { noremap = true, silent = true, desc = "Cycle terminals" })
+    vim.keymap.set('t', '<C-]>', function()
+      vim.cmd('stopinsert')
+      _G._cycle_terminals()
+    end, { noremap = true, silent = true, desc = "Cycle terminals" })
+
   end,
 }
 

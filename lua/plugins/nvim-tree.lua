@@ -3,6 +3,7 @@ return {
   dependencies = {
     "nvim-tree/nvim-web-devicons",
   },
+  cmd = { "NvimTreeToggle", "NvimTreeOpen", "NvimTreeClose" },
   keys = {
     { ",n", ":NvimTreeToggle<CR>", desc = "Toggle NvimTree" },
   },

@@ -19,3 +19,24 @@ vim.opt.scrolloff = 8        -- スクロール時に上下8行を確保
 vim.opt.sidescrolloff = 8    -- 横スクロール時に左右8列を確保
 vim.opt.showmode = false     -- モード表示を無効化（ステータスラインで表示するため）
 vim.opt.termguicolors = true -- TrueColorサポートを有効化
+vim.opt.autoread = true      -- 外部でファイルが変更された場合に自動で再読み込み
+
+-- 外部変更を自動検知
+vim.api.nvim_create_autocmd({ "FocusGained", "BufEnter", "CursorHold", "CursorHoldI" }, {
+    pattern = "*",
+    callback = function()
+        if vim.fn.getcmdwintype() == "" then
+            vim.cmd("checktime")
+        end
+    end,
+})
+
+-- WSL2環境ではinotifyが正しく動作しないため、タイマーで定期的にチェック
+local timer = vim.uv.new_timer()
+if timer then
+    timer:start(500, 500, vim.schedule_wrap(function()
+        if vim.api.nvim_get_mode().mode ~= "c" then
+            pcall(vim.cmd, "checktime")
+        end
+    end))
+end

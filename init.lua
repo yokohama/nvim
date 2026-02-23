@@ -57,19 +57,38 @@ require("yokohama.img-paste")
 -- アクティブ/非アクティブ window 背景色制御
 local function set_window_background()
   -- アクティブ window（赤系）
+  -- bg = "#2e1f1f",
   vim.api.nvim_set_hl(0, "Normal", {
-    bg = "#2e1f1f",
+    bg = "NONE",
   })
 
   -- 非アクティブ
+  -- bg = "#141617",
   vim.api.nvim_set_hl(0, "NormalNC", {
-    bg = "#141617",
+    bg = "NONE",
   })
 
   -- NvimTree 専用背景
+  -- bg = "#1f2a24",
+  -- bg = "#24362c",
   vim.api.nvim_set_hl(0, "NvimTreeNormal", {
-    --bg = "#1f2a24",
-    bg = "#24362c",
+    bg = "NONE",
+  })
+
+  -- ウィンドウ間のセパレーター/境界線を透明に
+  vim.api.nvim_set_hl(0, "WinSeparator", {
+    bg = "NONE",
+  })
+  vim.api.nvim_set_hl(0, "VertSplit", {
+    bg = "NONE",
+  })
+  vim.api.nvim_set_hl(0, "FloatBorder", {
+    bg = "NONE",
+  })
+
+  -- フローティングウィンドウ（avante等）を透明に
+  vim.api.nvim_set_hl(0, "NormalFloat", {
+    bg = "NONE",
   })
 end
 
@@ -89,6 +108,18 @@ vim.api.nvim_create_autocmd("FileType", {
       0,
       "winhighlight",
       "Normal:NvimTreeNormal,NormalNC:NvimTreeNormal"
+    )
+  end,
+})
+
+-- Avante のペインも透明にする
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "Avante", "AvanteInput", "AvanteSelectedFiles" },
+  callback = function()
+    vim.api.nvim_win_set_option(
+      0,
+      "winhighlight",
+      "Normal:Normal,NormalNC:NormalNC"
     )
   end,
 })
