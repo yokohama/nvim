@@ -32,28 +32,14 @@ require("core.clipboard")
 require("core.indent")
 require("core.keymaps")
 require("core.terminal")
-require("core.pentest")
-
--- Kali Linux 判定
-local function is_kali_linux()
-  local handle = io.popen("uname -a")
-  if handle then
-    local result = handle:read("*a")
-    handle:close()
-    return result:match("kali") ~= nil
-  end
-  return false
-end
-
-if is_kali_linux() then
-  require("core.kali_specific").setup()
-end
 
 -- 独自機能
 -- require("yokohama.preview-diagram-kitty")
-require("yokohama.preview-diagram-wsl")
+require("yokohama.mark-text-exe")
 require("yokohama.img-paste")
 require("yokohama.pentest-memo").setup()
+require("yokohama.shortcut-help").setup()
+require("yokohama.md").setup()
 
 -- アクティブ/非アクティブ window 背景色制御
 local function set_window_background()
@@ -61,6 +47,7 @@ local function set_window_background()
   -- bg = "#2e1f1f",
   vim.api.nvim_set_hl(0, "Normal", {
     bg = "NONE",
+    -- bg = "#2e1f1f",
   })
 
   -- 非アクティブ

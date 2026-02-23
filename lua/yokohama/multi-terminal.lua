@@ -8,6 +8,8 @@ local state = {
   windows = nil,  -- floating window ID
   is_open = false,
   count = 3,      -- デフォルト3カラム
+  color = "#5599FF",  -- 枠線・タイトル色（ブルー）
+  bg = "#1a1a2e",     -- 背景色（暗いブルー）
 }
 
 -- 外部から状態を確認
@@ -51,6 +53,10 @@ function M.toggle(count)
   local start_col = math.floor((vim.o.columns - total_width) / 2)
   local start_row = math.floor((vim.o.lines - height) / 2)
 
+  -- ハイライトグループを作成
+  vim.api.nvim_set_hl(0, 'MultiTermBorder', { fg = state.color })
+  vim.api.nvim_set_hl(0, 'MultiTermBg', { bg = state.bg })
+
   -- ウィンドウを開く
   state.windows = {}
   for i = 1, count do
@@ -63,8 +69,11 @@ function M.toggle(count)
       row = start_row,
       style = "minimal",
       border = "rounded",
+      title = " Terminal " .. i .. " ",
+      title_pos = "center",
     })
     vim.api.nvim_win_set_option(win, 'winblend', 20)
+    vim.api.nvim_win_set_option(win, 'winhighlight', 'FloatBorder:MultiTermBorder,FloatTitle:MultiTermBorder,NormalFloat:MultiTermBg')
     state.windows[i] = win
   end
 

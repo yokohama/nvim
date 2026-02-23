@@ -15,7 +15,7 @@ local function open_windows_marktext()
   }, { detach = true })
 end
 
-vim.api.nvim_create_user_command("PreviewMd", open_windows_marktext, {})
+vim.api.nvim_create_user_command("MarkText", open_windows_marktext, {})
 
 return M
 

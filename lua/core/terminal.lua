@@ -64,8 +64,8 @@ vim.api.nvim_create_autocmd("TermOpen", {
     end,
 })
 
--- カスタムコマンド `:T` を作成
-vim.api.nvim_create_user_command('T', function()
+-- カスタムコマンド `:D` (Dashboard) を作成
+vim.api.nvim_create_user_command('D', function()
     -- NvimTreeを開く
     vim.cmd('NvimTreeOpen')
 

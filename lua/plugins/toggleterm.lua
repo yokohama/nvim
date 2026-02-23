@@ -1,10 +1,10 @@
 -- ターミナル定義（唯一のソース）
 local terminal_defs = {
-  { key = "<leader>o", color = "#FFFF00", command = "ors search command", insert = false, title = "ORS", desc = "ORS Terminal" },
-  { key = "<leader>t", color = "#00FF00", command = "", insert = true, title = "Terminal", desc = "Terminal" },
-  { key = "<leader>c", color = "#DA7756", command = "cd $HOME/life-as-code && claude", insert = true, title = "Claude Code", desc = "Claude Code Terminal" },
-  { key = "<leader>h", color = "#FFFFFF", command = "htop", insert = true, title = "htop", desc = "htop Terminal" },
-  { key = "<leader>b", multi = 3, title = "Terminals", desc = "3-Column Terminals" },
+  { key = "<leader>o", color = "#FFFF00", bg = "#2e2e1a", command = "ors search command", insert = false, title = "ORS", desc = "ORS Terminal" },
+  { key = "<leader>t", color = "#00FF00", bg = "#1a2e1a", command = "", insert = true, title = "Terminal", desc = "Terminal" },
+  { key = "<leader>c", color = "#DA7756", bg = "#2e1f1a", command = "cd $HOME/life-as-code && claude", insert = true, title = "Claude Code", desc = "Claude Code Terminal" },
+  { key = "<leader>h", color = "#FFFFFF", bg = "#2e2e2e", command = "", insert = true, title = "Shell", desc = "Shell Terminal" },
+  { key = "<leader>b", multi = 3, color = "#5599FF", bg = "#1a1a2e", title = "Terminals", desc = "3-Column Terminals" },
 }
 
 -- keys配列を自動生成
@@ -19,7 +19,7 @@ for _, def in ipairs(terminal_defs) do
   else
     table.insert(keys, {
       def.key,
-      string.format("<cmd>lua _my_toggle('%s', '%s', %s, '%s')<CR>", def.color, def.command, def.insert, def.title),
+      string.format("<cmd>lua _my_toggle('%s', '%s', %s, '%s', '%s')<CR>", def.color, def.command, def.insert, def.title, def.bg or ""),
       desc = def.desc,
     })
   end
@@ -84,14 +84,18 @@ return {
       end,
     })
 
-    -- カスタムターミナル toggle関数（色、コマンド、インサートモード、タイトルを外部から注入可能）
+    -- カスタムターミナル toggle関数（色、コマンド、インサートモード、タイトル、背景色を外部から注入可能）
     _G._my_toggle = (function()
       local terminals = {}
-      return function(color, command, insert_mode, title)
+      return function(color, command, insert_mode, title, bg)
         local key = (color or "") .. (command or "") .. tostring(insert_mode)
         if not terminals[key] then
           local hl_name = "MyTermBorder_" .. key:gsub("[^%w]", "_")
+          local hl_bg_name = "MyTermBg_" .. key:gsub("[^%w]", "_")
           vim.api.nvim_set_hl(0, hl_name, { fg = color or '#FFFFFF' })
+          if bg and bg ~= "" then
+            vim.api.nvim_set_hl(0, hl_bg_name, { bg = bg })
+          end
           terminals[key] = Terminal:new({
             direction = "float",
             float_opts = {
@@ -131,7 +135,12 @@ return {
           if term:is_open() then
             local win_id = term.window
             if win_id and vim.api.nvim_win_is_valid(win_id) then
-              vim.api.nvim_win_set_option(win_id, 'winhighlight', 'FloatBorder:' .. hl_name .. ',FloatTitle:' .. hl_name)
+              local hl_bg_name = "MyTermBg_" .. key:gsub("[^%w]", "_")
+              local winhighlight = 'FloatBorder:' .. hl_name .. ',FloatTitle:' .. hl_name
+              if bg and bg ~= "" then
+                winhighlight = winhighlight .. ',NormalFloat:' .. hl_bg_name
+              end
+              vim.api.nvim_win_set_option(win_id, 'winhighlight', winhighlight)
               -- タイトルを設定
               if title then
                 vim.api.nvim_win_set_config(win_id, {
