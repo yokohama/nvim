@@ -4,7 +4,7 @@ local terminal_defs = {
   { key = "<leader>t", color = "#00FF00", command = "", insert = true, title = "Terminal", desc = "Terminal" },
   { key = "<leader>c", color = "#DA7756", command = "cd $HOME/life-as-code && claude", insert = true, title = "Claude Code", desc = "Claude Code Terminal" },
   { key = "<leader>h", color = "#FFFFFF", command = "htop", insert = true, title = "htop", desc = "htop Terminal" },
-  { key = "<leader>b", multi = 3, title = "Background", desc = "Background Terminals" },
+  { key = "<leader>b", multi = 3, title = "Terminals", desc = "3-Column Terminals" },
 }
 
 -- keys配列を自動生成
@@ -149,12 +149,12 @@ return {
     local multi_term = require("yokohama.multi-terminal")
 
     -- Ctrl+\をカスタマイズ: multi-terminalが開いていればそれを閉じる
+    -- 何も開いていない場合は何もしない（デフォルトのToggleTermは無効）
     vim.keymap.set({'n', 't'}, '<C-\\>', function()
       if multi_term.is_open() then
         _G._multi_terminal()
-      else
-        vim.cmd('ToggleTerm')
       end
+      -- multi-terminalが開いていない場合は何もしない
     end, { noremap = true, silent = true, desc = "Toggle terminal" })
 
     -- グローバル関数を定義
@@ -179,11 +179,20 @@ return {
     -- 開いているターミナルを順番に切り替える機能
     local current_index = 0
 
+    -- ターミナルを開く/閉じるヘルパー関数
+    local function toggle_terminal_by_def(def)
+      if def.multi then
+        _G._multi_terminal(def.multi)
+      else
+        _my_toggle(def.color, def.command, def.insert, def.title)
+      end
+    end
+
     _G._cycle_terminals = function()
       -- 現在開いているターミナルを閉じる
       if current_index > 0 then
         local prev = terminal_defs[current_index]
-        _my_toggle(prev.color, prev.command, prev.insert, prev.title)
+        toggle_terminal_by_def(prev)
       end
       -- 次のターミナルへ
       current_index = current_index + 1
@@ -192,7 +201,7 @@ return {
       end
       -- 次のターミナルを開く
       local next_term = terminal_defs[current_index]
-      _my_toggle(next_term.color, next_term.command, next_term.insert, next_term.title)
+      toggle_terminal_by_def(next_term)
     end
 
     -- ターミナルを順番に切り替え

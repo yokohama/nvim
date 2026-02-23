@@ -45,7 +45,7 @@ function M.toggle(count)
 
   -- ウィンドウサイズ計算
   local total_width = math.floor(vim.o.columns * 0.9)
-  local height = math.floor(vim.o.lines * 0.85)
+  local height = math.floor(vim.o.lines * 0.9)
   local gap = 2
   local single_width = math.floor((total_width - gap * (count - 1)) / count)
   local start_col = math.floor((vim.o.columns - total_width) / 2)

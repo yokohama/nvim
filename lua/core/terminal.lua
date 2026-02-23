@@ -21,9 +21,47 @@ vim.keymap.set('t', '<C-j>', term_wincmd('j'), {noremap = true, silent = true})
 vim.keymap.set('t', '<C-k>', term_wincmd('k'), {noremap = true, silent = true})
 vim.keymap.set('t', '<C-l>', term_wincmd('l'), {noremap = true, silent = true})
 
+-- ノーマルモード維持フラグ（バッファ番号をキーに）
+_G._term_stay_normal = _G._term_stay_normal or {}
+
 vim.api.nvim_create_autocmd("TermOpen", {
     pattern = "*",
-    command = "setlocal nonumber"
+    callback = function()
+      local buf = vim.api.nvim_get_current_buf()
+      vim.cmd("setlocal nonumber")
+
+      -- Esc: ノーマルモードに抜けてフラグを立てる
+      vim.api.nvim_buf_set_keymap(buf, 't', '<Esc>', '', {
+        noremap = true, silent = true,
+        callback = function()
+          _G._term_stay_normal[buf] = true
+          vim.cmd([[stopinsert]])
+        end,
+      })
+
+      -- i: insertモードに戻ってフラグをクリア
+      vim.api.nvim_buf_set_keymap(buf, 'n', 'i', '', {
+        noremap = true, silent = true,
+        callback = function()
+          _G._term_stay_normal[buf] = nil
+          vim.cmd("startinsert")
+        end,
+      })
+
+      -- BufEnter: フラグがなければ自動でinsertモード
+      vim.api.nvim_create_autocmd({"BufEnter", "WinEnter"}, {
+        buffer = buf,
+        callback = function()
+          if not _G._term_stay_normal[buf] then
+            vim.schedule(function()
+              if vim.api.nvim_get_mode().mode ~= 't' then
+                vim.cmd("startinsert")
+              end
+            end)
+          end
+        end,
+      })
+    end,
 })
 
 -- カスタムコマンド `:T` を作成
