@@ -17,7 +17,7 @@ function M.preview()
     vim.cmd('write')
   end
 
-  local cmd = string.format("mdcat -p '%s'", filepath)
+  local cmd = string.format("mcat -p '%s'", filepath)
 
   if glow_term then
     glow_term:shutdown()

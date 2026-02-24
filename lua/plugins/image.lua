@@ -5,7 +5,7 @@ return {
   -- ft = { "markdown", "vimwiki", "norg" },
   config = function()
     require("image").setup({
-      backend = "kitty",
+      backend = "sixel",
       processor = "magick_cli",
       integrations = {
         markdown = {
