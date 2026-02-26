@@ -95,8 +95,22 @@ WSL接続時、ConPTY経由ではKitty/Sixelグラフィックスが動作しな
 ### 根本原因
 ターミナルバッファ内でネストされたnvimが、キー入力を正しく受け取れていない
 
-### 解決策の候補
-1. `nvr` (neovim-remote) を使って外側のnvimで新しいバッファを開く
-2. `$EDITOR`を別のエディタ（vim, nano等）に設定
-3. ターミナルモードのキーマッピングを調整
+### 根本原因（詳細）
+`core/terminal.lua`の`TermOpen`で`<Esc>`をマッピングしていたため、vim内で`<Esc>`を押すと外側のnvimがノーマルモードに戻り、`:wq`が外側のnvimに送られていた。
+
+### 解決策
+**`:D`で開くターミナルではマッピングをスキップする**
+
+`core/terminal.lua`を修正:
+1. `:D`コマンドでマーカー`vim.b[buf].claude_terminal = true`を設定
+2. `TermOpen`でマーカーをチェックし、あればマッピングをスキップ
+
+また、`$EDITOR`をvimに変更（`~/.zshrc`）:
+```bash
+if [ -n "$NVIM" ]; then
+  export EDITOR="/usr/bin/vim.basic"
+fi
+```
+
+### 解決完了 ✓ (2026-02-25)
 

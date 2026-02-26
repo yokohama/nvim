@@ -30,6 +30,12 @@ vim.api.nvim_create_autocmd("TermOpen", {
       local buf = vim.api.nvim_get_current_buf()
       vim.cmd("setlocal nonumber")
 
+      -- :Dで開いたターミナル（Claude Code用）はマッピングをスキップ
+      -- ネストされたvim/nvimでEscや:wqが正常に動作するようにするため
+      if vim.b[buf].claude_terminal then
+        return
+      end
+
       -- Esc: ノーマルモードに抜けてフラグを立てる
       vim.api.nvim_buf_set_keymap(buf, 't', '<Esc>', '', {
         noremap = true, silent = true,
@@ -72,6 +78,11 @@ vim.api.nvim_create_user_command('D', function()
     -- 編集エリアに移動してから右側にターミナルを作成
     vim.cmd('wincmd l')
     vim.cmd('belowright vnew')
+
+    -- Claude Code用ターミナルのマーカーを設定（TermOpenより前に設定）
+    local buf = vim.api.nvim_get_current_buf()
+    vim.b[buf].claude_terminal = true
+
     local term_chan = vim.fn.termopen('env TERM=xterm $SHELL')
 
     -- claudeコマンドを実行

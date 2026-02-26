@@ -29,7 +29,12 @@ vim.keymap.set('n', '<leader>m', function()
   -- 新しいウィンドウで開く
   vim.cmd('botright split')
   vim.api.nvim_win_set_buf(0, buf)
-  vim.api.nvim_win_set_height(0, math.min(#lines, 20))
+  vim.api.nvim_win_set_height(0, 30)
+
+  -- メッセージバッファ内で,mを押すと閉じる
+  vim.api.nvim_buf_set_keymap(buf, 'n', '<leader>m', '<cmd>close<CR>', {
+    noremap = true, silent = true
+  })
 
   -- 最下部にカーソル移動
   vim.cmd('normal! G')
