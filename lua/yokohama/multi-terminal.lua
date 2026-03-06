@@ -17,6 +17,11 @@ function M.is_open()
   return state.is_open
 end
 
+-- 外部からバッファを取得
+function M.get_buffers()
+  return state.buffers
+end
+
 function M.toggle(count)
   count = count or state.count
 
@@ -46,7 +51,7 @@ function M.toggle(count)
   end
 
   -- ウィンドウサイズ計算
-  local total_width = math.floor(vim.o.columns * 0.9)
+  local total_width = math.floor(vim.o.columns * 0.5)
   local height = math.floor(vim.o.lines * 0.9)
   local gap = 2
   local single_width = math.floor((total_width - gap * (count - 1)) / count)

@@ -39,7 +39,7 @@ function M.open()
     },
     float_opts = {
       border = "rounded",
-      width = math.floor(vim.o.columns * 0.7),
+      width = math.floor(vim.o.columns * 0.5),
       height = math.floor(vim.o.lines * 0.7),
       winblend = 10,
     },

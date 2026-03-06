@@ -3,8 +3,8 @@ local terminal_defs = {
   { key = "<leader>o", color = "#FFFF00", bg = "#2e2e1a", command = "ors search command", insert = false, title = "ORS", desc = "ORS Terminal" },
   { key = "<leader>t", color = "#00FF00", bg = "#1a2e1a", command = "", insert = true, title = "Terminal", desc = "Terminal" },
   { key = "<leader>c", color = "#DA7756", bg = "#2e1f1a", command = "cd $HOME/life-as-code && claude", insert = true, title = "Claude Code", desc = "Claude Code Terminal" },
-  { key = "<leader>h", color = "#FFFFFF", bg = "#2e2e2e", command = "", insert = true, title = "Shell", desc = "Shell Terminal" },
-  { key = "<leader>b", multi = 3, color = "#5599FF", bg = "#1a1a2e", title = "Terminals", desc = "3-Column Terminals" },
+--  { key = "<leader>h", color = "#FFFFFF", bg = "#2e2e2e", command = "", insert = true, title = "Shell", desc = "Shell Terminal" },
+  { key = "<leader>b", multi = 2, color = "#5599FF", bg = "#1a1a2e", title = "Terminals", desc = "2-Column Terminals" },
 }
 
 -- keys配列を自動生成
@@ -85,8 +85,10 @@ return {
     })
 
     -- カスタムターミナル toggle関数（色、コマンド、インサートモード、タイトル、背景色を外部から注入可能）
+    -- ターミナルテーブルをグローバル公開（pentest-memo等から参照可能に）
+    _G._toggleterm_instances = {}
     _G._my_toggle = (function()
-      local terminals = {}
+      local terminals = _G._toggleterm_instances
       return function(color, command, insert_mode, title, bg)
         local key = (color or "") .. (command or "") .. tostring(insert_mode)
         if not terminals[key] then
@@ -100,7 +102,7 @@ return {
             direction = "float",
             float_opts = {
               border = "rounded",
-              width = math.floor(vim.o.columns * 0.9),
+              width = math.floor(vim.o.columns * 0.5),
               height = math.floor(vim.o.lines * 0.9),
               winblend = 34,
               highlights = {
@@ -219,6 +221,54 @@ return {
       vim.cmd('stopinsert')
       _G._cycle_terminals()
     end, { noremap = true, silent = true, desc = "Cycle terminals" })
+
+    -- すべてのターミナルを事前に作成（pentest-memo等から利用可能にする）
+    -- ウィンドウは開かず、バックグラウンドでjobのみ起動
+    vim.defer_fn(function()
+      for _, def in ipairs(terminal_defs) do
+        if not def.multi then
+          local key = (def.color or "") .. (def.command or "") .. tostring(def.insert)
+          if not _G._toggleterm_instances[key] then
+            local hl_name = "MyTermBorder_" .. key:gsub("[^%w]", "_")
+            local hl_bg_name = "MyTermBg_" .. key:gsub("[^%w]", "_")
+            vim.api.nvim_set_hl(0, hl_name, { fg = def.color or '#FFFFFF' })
+            if def.bg and def.bg ~= "" then
+              vim.api.nvim_set_hl(0, hl_bg_name, { bg = def.bg })
+            end
+            local term = Terminal:new({
+              direction = "float",
+              float_opts = {
+                border = "rounded",
+                width = math.floor(vim.o.columns * 0.5),
+                height = math.floor(vim.o.lines * 0.9),
+                winblend = 34,
+                highlights = {
+                  border = hl_name,
+                  background = "Normal",
+                },
+              },
+              on_create = function(t)
+                if def.command and def.command ~= "" then
+                  vim.defer_fn(function()
+                    t:send(def.command)
+                  end, 100)
+                end
+              end,
+              on_open = function(t)
+                if def.insert then
+                  vim.cmd("startinsert!")
+                else
+                  vim.cmd("stopinsert")
+                end
+              end,
+            })
+            _G._toggleterm_instances[key] = term
+            -- バックグラウンドでjobを起動（ウィンドウは開かない）
+            term:spawn()
+          end
+        end
+      end
+    end, 500)  -- 少し遅延させてNeovim起動完了を待つ
 
   end,
 }
