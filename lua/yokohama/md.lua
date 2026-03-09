@@ -17,7 +17,6 @@ function M.preview()
     vim.cmd('write')
   end
 
-  -- local cmd = string.format("mcat -p '%s'", filepath)
   local cmd = string.format("mcat --md-image all --paging always '%s'", filepath)
 
   if glow_term then

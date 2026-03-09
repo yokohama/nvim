@@ -1,30 +1,11 @@
--- ターミナル定義（唯一のソース）
-local terminal_defs = {
-  { key = "<leader>o", color = "#FFFF00", bg = "#2e2e1a", command = "ors search command", insert = false, title = "ORS", desc = "ORS Terminal" },
-  { key = "<leader>t", color = "#00FF00", bg = "#1a2e1a", command = "", insert = true, title = "Terminal", desc = "Terminal" },
-  { key = "<leader>c", color = "#DA7756", bg = "#2e1f1a", command = "cd $HOME/life-as-code && claude", insert = true, title = "Claude Code", desc = "Claude Code Terminal" },
---  { key = "<leader>h", color = "#FFFFFF", bg = "#2e2e2e", command = "", insert = true, title = "Shell", desc = "Shell Terminal" },
-  { key = "<leader>b", multi = 2, color = "#5599FF", bg = "#1a1a2e", title = "Terminals", desc = "2-Column Terminals" },
-}
+-- 動的ターミナル管理
+-- ,t: 新しいターミナルを作成
+-- Ctrl+]: ターミナル間を切り替え
 
--- keys配列を自動生成
-local keys = {}
-for _, def in ipairs(terminal_defs) do
-  if def.multi then
-    table.insert(keys, {
-      def.key,
-      string.format("<cmd>lua _multi_terminal(%d)<CR>", def.multi),
-      desc = def.desc,
-    })
-  else
-    table.insert(keys, {
-      def.key,
-      string.format("<cmd>lua _my_toggle('%s', '%s', %s, '%s', '%s')<CR>", def.color, def.command, def.insert, def.title, def.bg or ""),
-      desc = def.desc,
-    })
-  end
-end
-table.insert(keys, { "<leader>lg", "<cmd>lua _lazygit_toggle()<CR>", desc = "Toggle Lazygit" })
+local keys = {
+  { "<leader>t", "<cmd>lua _add_terminal()<CR>", desc = "New Terminal" },
+  { "<leader>lg", "<cmd>lua _lazygit_toggle()<CR>", desc = "Toggle Lazygit" },
+}
 
 return {
   "akinsho/toggleterm.nvim",
@@ -34,242 +15,164 @@ return {
   keys = keys,
   config = function()
     require("toggleterm").setup({
-      -- デフォルト設定
       size = 20,
-      -- open_mapping は手動で設定（multi-terminal対応のため）
       hide_numbers = true,
-      shade_filetypes = {},
       shade_terminals = true,
       shading_factor = 2,
       start_in_insert = true,
-      insert_mappings = true,
       persist_size = true,
       direction = "float",
       close_on_exit = true,
       shell = vim.o.shell,
       float_opts = {
         border = "curved",
-        winblend = 34,  -- 透明度を30%に設定
-        highlights = {
-          border = "Normal",
-          background = "Normal",
-        },
+        winblend = 34,
       },
     })
 
-    -- カスタムハイライトグループを定義
-    --vim.api.nvim_set_hl(0, 'LazygitFloat', { bg = '#4A235A' })
-    vim.api.nvim_set_hl(0, 'LazygitFloat', { bg = '#2E1437' })
-
-    -- Lazygit設定
     local Terminal = require('toggleterm.terminal').Terminal
-    local lazygit = Terminal:new({
-      cmd = "lazygit",
-      dir = "git_dir",
-      direction = "float",
-      float_opts = {
-        border = "double",
-        winblend = 0,  -- 透明度を0に設定（完全に不透明）
-        highlights = {
-          border = "Normal",
-          background = "Normal",
-        },
-      },
-      on_open = function(term)
-        vim.cmd("startinsert!")
-        vim.api.nvim_buf_set_keymap(term.bufnr, "n", "q", "<cmd>close<CR>", {noremap = true, silent = true})
-      end,
-      on_close = function(term)
-        vim.cmd("startinsert!")
-      end,
-    })
 
-    -- カスタムターミナル toggle関数（色、コマンド、インサートモード、タイトル、背景色を外部から注入可能）
-    -- ターミナルテーブルをグローバル公開（pentest-memo等から参照可能に）
-    _G._toggleterm_instances = {}
-    _G._my_toggle = (function()
-      local terminals = _G._toggleterm_instances
-      return function(color, command, insert_mode, title, bg)
-        local key = (color or "") .. (command or "") .. tostring(insert_mode)
-        if not terminals[key] then
-          local hl_name = "MyTermBorder_" .. key:gsub("[^%w]", "_")
-          local hl_bg_name = "MyTermBg_" .. key:gsub("[^%w]", "_")
-          vim.api.nvim_set_hl(0, hl_name, { fg = color or '#FFFFFF' })
-          if bg and bg ~= "" then
-            vim.api.nvim_set_hl(0, hl_bg_name, { bg = bg })
-          end
-          terminals[key] = Terminal:new({
-            direction = "float",
-            float_opts = {
-              border = "rounded",
-              width = math.floor(vim.o.columns * 0.5),
-              height = math.floor(vim.o.lines * 0.9),
-              winblend = 34,
-              highlights = {
-                border = hl_name,
-                background = "Normal",
-              },
-            },
-            on_create = function(term)
-              -- 初回作成時のみコマンドを実行
-              if command and command ~= "" then
-                vim.defer_fn(function()
-                  term:send(command)
-                end, 100)
-              end
-            end,
-            on_open = function(term)
-              if insert_mode then
-                vim.cmd("startinsert!")
-              else
-                vim.cmd("stopinsert")
-              end
-            end,
-            on_close = function(term)
-              -- 何もしない
-            end,
-          })
-        end
-        local term = terminals[key]
-        local hl_name = "MyTermBorder_" .. key:gsub("[^%w]", "_")
-        term:toggle()
-        vim.defer_fn(function()
-          if term:is_open() then
-            local win_id = term.window
-            if win_id and vim.api.nvim_win_is_valid(win_id) then
-              local hl_bg_name = "MyTermBg_" .. key:gsub("[^%w]", "_")
-              local winhighlight = 'FloatBorder:' .. hl_name .. ',FloatTitle:' .. hl_name
-              if bg and bg ~= "" then
-                winhighlight = winhighlight .. ',NormalFloat:' .. hl_bg_name
-              end
-              vim.api.nvim_win_set_option(win_id, 'winhighlight', winhighlight)
-              -- タイトルを設定
-              if title then
-                vim.api.nvim_win_set_config(win_id, {
-                  title = " " .. title .. " ",
-                  title_pos = "center",
-                })
-              end
-            end
-          end
-        end, 100)
-      end
-    end)()
-
-    -- マルチターミナル（横並びfloat）- 別モジュールで実装
-    local multi_term = require("yokohama.multi-terminal")
-
-    -- Ctrl+\をカスタマイズ: multi-terminalが開いていればそれを閉じる
-    -- 何も開いていない場合は何もしない（デフォルトのToggleTermは無効）
-    vim.keymap.set({'n', 't'}, '<C-\\>', function()
-      if multi_term.is_open() then
-        _G._multi_terminal()
-      end
-      -- multi-terminalが開いていない場合は何もしない
-    end, { noremap = true, silent = true, desc = "Toggle terminal" })
-
-    -- グローバル関数を定義
-    _G._lazygit_toggle = function()
-      lazygit:toggle()
-      -- lazygitウィンドウが開いたら背景色を設定
-      vim.defer_fn(function()
-        if lazygit:is_open() then
-          local win_id = lazygit.window
-          if win_id and vim.api.nvim_win_is_valid(win_id) then
-            vim.api.nvim_win_set_option(win_id, 'winhighlight', 'NormalFloat:LazygitFloat')
-          end
-        end
-      end, 100) -- 少し遅延させて確実にウィンドウが作成された後に実行
-    end
-
-    -- 明示的なToggleコマンドを追加
-    vim.api.nvim_create_user_command('Toggle', function()
-      vim.cmd('ToggleTerm')
-    end, {})
-
-    -- 開いているターミナルを順番に切り替える機能
+    -- ターミナル管理
+    local terminals = {}
     local current_index = 0
 
-    -- ターミナルを開く/閉じるヘルパー関数
-    local function toggle_terminal_by_def(def)
-      if def.multi then
-        _G._multi_terminal(def.multi)
-      else
-        _my_toggle(def.color, def.command, def.insert, def.title)
+    -- ハイライト設定
+    vim.api.nvim_set_hl(0, 'MyTermBorder', { fg = '#00FF00' })
+    vim.api.nvim_set_hl(0, 'MyTermBg', { bg = '#1a2e1a' })
+    vim.api.nvim_set_hl(0, 'LazygitFloat', { bg = '#2E1437' })
+
+    -- ターミナルウィンドウにタイトルを設定
+    local function update_terminal_title(term, num)
+      if term.window and vim.api.nvim_win_is_valid(term.window) then
+        vim.api.nvim_win_set_config(term.window, {
+          title = " Terminal " .. num .. " ",
+          title_pos = "center",
+        })
+        vim.api.nvim_win_set_option(term.window, 'winhighlight', 'FloatBorder:MyTermBorder,NormalFloat:MyTermBg')
       end
     end
 
+    -- 新しいターミナルを作成
+    _G._add_terminal = function()
+      local num = #terminals + 1
+      local term = Terminal:new({
+        direction = "float",
+        float_opts = {
+          border = "rounded",
+          width = math.floor(vim.o.columns * 0.7),
+          height = math.floor(vim.o.lines * 0.9),
+          winblend = 34,
+        },
+        on_open = function(t)
+          vim.cmd("startinsert!")
+          vim.defer_fn(function()
+            update_terminal_title(t, num)
+          end, 10)
+        end,
+        on_exit = function(t)
+          -- terminalsテーブルから削除
+          for i, term in ipairs(terminals) do
+            if term == t then
+              table.remove(terminals, i)
+              if current_index >= i then
+                current_index = math.max(0, current_index - 1)
+              end
+              break
+            end
+          end
+        end,
+      })
+      term._term_num = num  -- 番号を保存
+      table.insert(terminals, term)
+      current_index = num
+      term:open()
+    end
+
+    -- ターミナル切り替え
     _G._cycle_terminals = function()
-      -- 現在開いているターミナルを閉じる
-      if current_index > 0 then
-        local prev = terminal_defs[current_index]
-        toggle_terminal_by_def(prev)
+      if #terminals == 0 then
+        vim.notify("ターミナルがありません。,t で作成してください", vim.log.levels.INFO)
+        return
       end
-      -- 次のターミナルへ
+
+      -- 現在のターミナルを閉じる
+      if current_index > 0 and terminals[current_index] then
+        terminals[current_index]:close()
+      end
+
+      -- 次のインデックスへ
       current_index = current_index + 1
-      if current_index > #terminal_defs then
+      if current_index > #terminals then
         current_index = 1
       end
+
       -- 次のターミナルを開く
-      local next_term = terminal_defs[current_index]
-      toggle_terminal_by_def(next_term)
+      local term = terminals[current_index]
+      term:open()
+      vim.defer_fn(function()
+        update_terminal_title(term, term._term_num or current_index)
+      end, 10)
     end
 
-    -- ターミナルを順番に切り替え
+    -- Ctrl+]: ターミナル切り替え
     vim.keymap.set('n', '<C-]>', _G._cycle_terminals, { noremap = true, silent = true, desc = "Cycle terminals" })
     vim.keymap.set('t', '<C-]>', function()
       vim.cmd('stopinsert')
       _G._cycle_terminals()
     end, { noremap = true, silent = true, desc = "Cycle terminals" })
 
-    -- すべてのターミナルを事前に作成（pentest-memo等から利用可能にする）
-    -- ウィンドウは開かず、バックグラウンドでjobのみ起動
-    vim.defer_fn(function()
-      for _, def in ipairs(terminal_defs) do
-        if not def.multi then
-          local key = (def.color or "") .. (def.command or "") .. tostring(def.insert)
-          if not _G._toggleterm_instances[key] then
-            local hl_name = "MyTermBorder_" .. key:gsub("[^%w]", "_")
-            local hl_bg_name = "MyTermBg_" .. key:gsub("[^%w]", "_")
-            vim.api.nvim_set_hl(0, hl_name, { fg = def.color or '#FFFFFF' })
-            if def.bg and def.bg ~= "" then
-              vim.api.nvim_set_hl(0, hl_bg_name, { bg = def.bg })
-            end
-            local term = Terminal:new({
-              direction = "float",
-              float_opts = {
-                border = "rounded",
-                width = math.floor(vim.o.columns * 0.5),
-                height = math.floor(vim.o.lines * 0.9),
-                winblend = 34,
-                highlights = {
-                  border = hl_name,
-                  background = "Normal",
-                },
-              },
-              on_create = function(t)
-                if def.command and def.command ~= "" then
-                  vim.defer_fn(function()
-                    t:send(def.command)
-                  end, 100)
-                end
-              end,
-              on_open = function(t)
-                if def.insert then
-                  vim.cmd("startinsert!")
-                else
-                  vim.cmd("stopinsert")
-                end
-              end,
-            })
-            _G._toggleterm_instances[key] = term
-            -- バックグラウンドでjobを起動（ウィンドウは開かない）
-            term:spawn()
-          end
+    -- Ctrl+\: 現在のターミナルをトグル
+    vim.keymap.set({'n', 't'}, '<C-\\>', function()
+      if current_index > 0 and terminals[current_index] then
+        local term = terminals[current_index]
+        term:toggle()
+        -- 開いた時にタイトル更新
+        if term:is_open() then
+          vim.defer_fn(function()
+            update_terminal_title(term, term._term_num or current_index)
+          end, 50)
         end
       end
-    end, 500)  -- 少し遅延させてNeovim起動完了を待つ
+    end, { noremap = true, silent = true, desc = "Toggle current terminal" })
+
+    -- BufEnter時にタイトル更新（コマンド実行後に反映）
+    vim.api.nvim_create_autocmd("BufEnter", {
+      pattern = "term://*",
+      callback = function()
+        if current_index > 0 and terminals[current_index] then
+          local term = terminals[current_index]
+          if term:is_open() then
+            vim.defer_fn(function()
+              update_terminal_title(term, term._term_num or current_index)
+            end, 50)
+          end
+        end
+      end,
+    })
+
+    -- Lazygit
+    local lazygit = Terminal:new({
+      cmd = "lazygit",
+      dir = "git_dir",
+      direction = "float",
+      float_opts = {
+        border = "double",
+        winblend = 0,
+      },
+      on_open = function(term)
+        vim.cmd("startinsert!")
+        vim.api.nvim_buf_set_keymap(term.bufnr, "n", "q", "<cmd>close<CR>", {noremap = true, silent = true})
+      end,
+    })
+
+    _G._lazygit_toggle = function()
+      lazygit:toggle()
+      vim.defer_fn(function()
+        if lazygit:is_open() and lazygit.window and vim.api.nvim_win_is_valid(lazygit.window) then
+          vim.api.nvim_win_set_option(lazygit.window, 'winhighlight', 'NormalFloat:LazygitFloat')
+        end
+      end, 100)
+    end
 
   end,
 }
-

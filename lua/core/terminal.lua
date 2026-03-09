@@ -5,13 +5,9 @@
 -- vim.api.nvim_set_keymap('t', '<C-k>', [[<C-\><C-n><C-w>k]], {noremap = true, silent = true})
 -- vim.api.nvim_set_keymap('t', '<C-l>', [[<C-\><C-n><C-w>l]], {noremap = true, silent = true})
 
--- [新コード] マルチターミナル対応版
+-- ターミナルモードでのウィンドウ移動
 local function term_wincmd(dir)
   return function()
-    local multi_term = package.loaded["yokohama.multi-terminal"]
-    if multi_term and multi_term.is_open() then
-      return  -- マルチターミナルはバッファローカルマッピングに任せる
-    end
     vim.cmd('stopinsert')
     vim.cmd('wincmd ' .. dir)
   end
