@@ -1,9 +1,15 @@
 -- クリップボード設定
 vim.opt.clipboard = "unnamedplus"
 
--- xclipの設定
-if vim.fn.executable('xclip') == 1 then
-  -- 標準のxclip設定
+-- OS判定
+local is_mac = vim.fn.has('macunix') == 1
+local is_linux = vim.fn.has('unix') == 1 and not is_mac
+
+-- クリップボードプロバイダ設定
+if is_mac then
+  -- macOS: pbcopy/pbpasteをNeovimが自動検出するため設定不要
+elseif is_linux and vim.fn.executable('xclip') == 1 then
+  -- Linux: xclip設定
   vim.g.clipboard = {
     name = 'xclip',
     copy = {
@@ -14,9 +20,9 @@ if vim.fn.executable('xclip') == 1 then
       ['+'] = 'xclip -selection clipboard -o',
       ['*'] = 'xclip -selection clipboard -o',
     },
-    cache_enabled = 0,  -- キャッシュを無効化
+    cache_enabled = 0,
   }
-else
+elseif is_linux then
   vim.notify("xclipが見つかりません。クリップボード機能が制限されます。", vim.log.levels.WARN)
 end
 
@@ -28,9 +34,8 @@ vim.api.nvim_create_autocmd("VimEnter", {
   callback = function()
     if vim.fn.has('clipboard') == 0 then
       vim.notify("クリップボード機能が利用できません。", vim.log.levels.WARN)
-    elseif not vim.fn.executable('xclip') == 1 then
+    elseif is_linux and vim.fn.executable('xclip') ~= 1 then
       vim.notify("xclipが見つかりません。apt install xclipでインストールしてください。", vim.log.levels.WARN)
     end
   end
 })
-
