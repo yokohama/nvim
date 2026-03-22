@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:gist.github.com)",
+      "Bash(nvim:*)",
+      "Bash(echo EDITOR: $EDITOR:*)",
+      "Bash(powershell.exe:*)",
+      "WebFetch(domain:github.com)"
+    ]
+  }
+}

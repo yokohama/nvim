@@ -139,5 +139,4 @@ local cmd = string.format("mcat --md-image all --paging always '%s'", filepath)
 ## 対応ステータス
 
 - [x] clipboard.lua - OS判定追加 (2026-03-21)
-- [x] img-paste.lua - macOS対応 pngpaste (2026-03-21)
-- [ ] 動作確認（macOS）
+- [x] img-paste.lua - macOS対応 pngpaste (2026-03-21)- [ ] 動作確認（macOS）
