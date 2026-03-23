@@ -1,0 +1,1 @@
+- `,fr` よるflutter runを追加したが、powershell前提なので、macでは動かない。OSの分岐（無効化）が必要。

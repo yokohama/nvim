@@ -5,6 +5,7 @@
 local keys = {
   { "<leader>t", "<cmd>lua _add_terminal()<CR>", desc = "New Terminal" },
   { "<leader>lg", "<cmd>lua _lazygit_toggle()<CR>", desc = "Toggle Lazygit" },
+  { "<leader>fr", "<cmd>lua _flutter_run_toggle()<CR>", desc = "Toggle Flutter Run" },
 }
 
 return {
@@ -170,6 +171,36 @@ return {
       vim.defer_fn(function()
         if lazygit:is_open() and lazygit.window and vim.api.nvim_win_is_valid(lazygit.window) then
           vim.api.nvim_win_set_option(lazygit.window, 'winhighlight', 'NormalFloat:LazygitFloat')
+        end
+      end, 100)
+    end
+
+    -- Flutter Run
+    vim.api.nvim_set_hl(0, 'FlutterFloat', { bg = '#1a1a2e' })
+    local flutter_run = nil
+
+    _G._flutter_run_toggle = function()
+      local cwd = vim.fn.getcwd()
+      if flutter_run == nil then
+        flutter_run = Terminal:new({
+          cmd = "powershell.exe 'flutter run'",
+          dir = cwd,
+          direction = "float",
+          float_opts = {
+            border = "double",
+            width = math.floor(vim.o.columns * 0.8),
+            height = math.floor(vim.o.lines * 0.8),
+            winblend = 0,
+          },
+          on_open = function(term)
+            vim.cmd("startinsert!")
+          end,
+        })
+      end
+      flutter_run:toggle()
+      vim.defer_fn(function()
+        if flutter_run:is_open() and flutter_run.window and vim.api.nvim_win_is_valid(flutter_run.window) then
+          vim.api.nvim_win_set_option(flutter_run.window, 'winhighlight', 'NormalFloat:FlutterFloat')
         end
       end, 100)
     end
