@@ -27,7 +27,7 @@ return {
       shell = vim.o.shell,
       float_opts = {
         border = "curved",
-        winblend = 34,
+        winblend = 8,
       },
     })
 
@@ -62,7 +62,7 @@ return {
           border = "rounded",
           width = math.floor(vim.o.columns * 0.7),
           height = math.floor(vim.o.lines * 0.9),
-          winblend = 34,
+          winblend = 8,
         },
         on_open = function(t)
           vim.cmd("startinsert!")
@@ -158,7 +158,7 @@ return {
       direction = "float",
       float_opts = {
         border = "double",
-        winblend = 0,
+        winblend = 8,
       },
       on_open = function(term)
         vim.cmd("startinsert!")
@@ -192,7 +192,7 @@ return {
             border = "double",
             width = math.floor(vim.o.columns * 0.8),
             height = math.floor(vim.o.lines * 0.8),
-            winblend = 0,
+            winblend = 8,
           },
           on_open = function(term)
             vim.cmd("startinsert!")

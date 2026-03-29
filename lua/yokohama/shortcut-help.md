@@ -11,9 +11,6 @@
 | Key   | Description          |
 |-------|----------------------|
 | `,t`  | Terminal             |
-| `,c`  | Claude Code          |
-| `,o`  | ORS search           |
-| `,b`  | 3-column terminals   |
 | `,lg` | Lazygit              |
 
 ## Memo
@@ -31,6 +28,7 @@
 ## Command
 | Command       | Description                                                             |
 |---------------|-------------------------------------------------------------------------|
+| `:Md`         | Preview Markdown with mcat                                              |
 | `:MarkText`   | Open md file with MarkText.exe                                          |
 | `:ImgPaste`   | Insert current line image file path & file saved at `$HOME/md_image`    |
 | `:OrsImgPaste`| Insert current line image file path & file saved at `$ORS_RECORDS_DIR/images` |

@@ -35,7 +35,7 @@ function M.preview()
       border = "rounded",
       width = math.floor(vim.o.columns * 0.85),
       height = math.floor(vim.o.lines * 0.85),
-      winblend = 10,
+      winblend = 8,
     },
     on_open = function(term)
       vim.api.nvim_buf_set_keymap(term.bufnr, "n", "q", "<cmd>close<CR>", { noremap = true, silent = true })
@@ -44,11 +44,12 @@ function M.preview()
       vim.defer_fn(function()
         if term.window and vim.api.nvim_win_is_valid(term.window) then
           vim.api.nvim_set_hl(0, 'MdFloatTitle', { fg = '#FFFFFF' })
+          vim.api.nvim_set_hl(0, 'MdFloat', { bg = '#2D2D2D' })
           vim.api.nvim_win_set_config(term.window, {
             title = " MD ",
             title_pos = "center",
           })
-          vim.api.nvim_win_set_option(term.window, 'winhighlight', 'FloatTitle:MdFloatTitle')
+          vim.api.nvim_win_set_option(term.window, 'winhighlight', 'FloatTitle:MdFloatTitle,NormalFloat:MdFloat')
         end
       end, 10)
     end,
