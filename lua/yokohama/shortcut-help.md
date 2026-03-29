@@ -5,6 +5,7 @@
 |------|------------------|
 | `,n` | NvimTree toggle  |
 | `,h` | This help        |
+| `,gx` | open browser then execute on url |
 
 ## Toggle
 | Key   | Description          |

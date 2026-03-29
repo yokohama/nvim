@@ -181,9 +181,11 @@ return {
 
     _G._flutter_run_toggle = function()
       local cwd = vim.fn.getcwd()
+      -- WSLパスをWindowsパスに変換
+      local win_path = vim.fn.system("wslpath -w " .. cwd):gsub("\n", "")
       if flutter_run == nil then
         flutter_run = Terminal:new({
-          cmd = "powershell.exe 'flutter run'",
+          cmd = "powershell.exe -Command \"cd '" .. win_path .. "'; flutter run\"",
           dir = cwd,
           direction = "float",
           float_opts = {
