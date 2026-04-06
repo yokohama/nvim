@@ -77,6 +77,15 @@ return {
             avante_add_file(node)
           end
         end, { buffer = bufnr, desc = "Add to Avante Selected Files" })
+
+        -- ,gx: ファイルをChromeで開く（WSL2用）
+        vim.keymap.set('n', ',gx', function()
+          local node = api.tree.get_node_under_cursor()
+          if node and node.absolute_path then
+            local win_path = vim.fn.system('wslpath -w "' .. node.absolute_path .. '"'):gsub('\n', '')
+            vim.fn.jobstart({'/mnt/c/Program Files/Google/Chrome/Application/chrome.exe', win_path}, {detach = true})
+          end
+        end, { buffer = bufnr, desc = "Open in Chrome" })
       end,
 
       actions = {

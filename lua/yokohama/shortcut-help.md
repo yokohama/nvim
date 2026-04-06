@@ -5,7 +5,12 @@
 |------|------------------|
 | `,n` | NvimTree toggle  |
 | `,h` | This help        |
-| `,gx` | open browser then execute on url |
+| `,gx` | Open page with Chrome when excute on url in text area. |
+
+## Tree
+| Key  | Description      |
+|------|------------------|
+| `,gx` | Open file with Chrome when excute on file name in tree. |
 
 ## Toggle
 | Key   | Description          |
