@@ -1,0 +1,16 @@
+{
+  "name": "lsp-test",
+  "version": "1.0.0",
+  "description": "JSON LSP Test (jsonls)",
+  "scripts": {
+    "test": "echo 'test'"
+  },
+  "dependencies": {
+    "example": "1.0.0"
+  },
+  "config": {
+    "port": 3000,
+    "debug": true,
+    "features": ["feature1", "feature2"]
+  }
+}

@@ -1,7 +1,7 @@
 -- ウインド設定
 vim.opt.number = true
 vim.opt.winblend = 30
-vim.opt.pumblend = 76
+vim.opt.pumblend = 0
 vim.opt.cursorline = true
 
 -- 背景透明　

@@ -1,0 +1,30 @@
+/* CSS LSP Test (cssls) */
+/* 期待される動作: プロパティ補完、値補完、カラープレビュー */
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* テスト: プロパティ名を途中まで入力 → 補完 */
+  background-color: #3498db;
+  padding: 20px;
+  margin: 0 auto;
+}
+
+.button {
+  /* テスト: colorの後にコロン → 値の補完 */
+  color: white;
+  background: linear-gradient(to right, #667eea, #764ba2);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* テスト: 無効なプロパティ（警告が出るか） */
+.invalid {
+  /* unknown-property: value; */
+}

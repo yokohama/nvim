@@ -6,7 +6,10 @@
       "Bash(nvim:*)",
       "Bash(echo EDITOR: $EDITOR:*)",
       "Bash(powershell.exe:*)",
-      "WebFetch(domain:github.com)"
+      "WebFetch(domain:github.com)",
+      "Bash(cmd.exe:*)",
+      "Read(//home/banister/.local/share/nvim/mason/packages/rust-analyzer/**)",
+      "Bash(~/.local/share/nvim/mason/bin/rust-analyzer --version)"
     ]
   }
 }
