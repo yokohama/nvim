@@ -29,6 +29,12 @@ return {
       end
     end
 
+    -- フォルダの色設定
+    vim.api.nvim_set_hl(0, "NvimTreeFolderName", { fg = "#5c9fd7" })        -- 青
+    vim.api.nvim_set_hl(0, "NvimTreeFolderIcon", { fg = "#5c9fd7" })        -- 青（アイコンも）
+    vim.api.nvim_set_hl(0, "NvimTreeOpenedFolderName", { fg = "#7dcfff" })  -- 水色
+    vim.api.nvim_set_hl(0, "NvimTreeEmptyFolderName", { fg = "#5c9fd7" })   -- 青
+
     require("nvim-tree").setup({
       -- 基本設定
       sort_by = "case_sensitive",
@@ -98,6 +104,7 @@ return {
       },
 
     })
+
     -- ウィンドウが2以下（NvimTreeとエディタ1つの場合）の時のみ NvimTree を閉じる
     vim.cmd([[
       function! ConditionalNvimTreeClose()
