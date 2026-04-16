@@ -103,8 +103,8 @@ return {
               -- フォルダの場合はWindowsエクスプローラーで開く
               vim.fn.jobstart({'explorer.exe', win_path}, {detach = true})
             else
-              -- ファイルの場合はChromeで開く
-              vim.fn.jobstart({'/mnt/c/Program Files/Google/Chrome/Application/chrome.exe', win_path}, {detach = true})
+              -- ファイルの場合はWindows既定のアプリで開く
+              vim.fn.jobstart({'cmd.exe', '/c', 'start', '', win_path}, {detach = true})
             end
           end
         end, { buffer = bufnr, desc = "Open in Chrome/Explorer" })
