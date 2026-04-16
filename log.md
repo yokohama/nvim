@@ -424,3 +424,37 @@ vim.lsp.config('dartls', {
 ```
 
 **ステータス:** 保留（2026-04-06）
+
+## 2026-04-14
+
+### nvim-treeでフォルダを`,gx`でWindowsエクスプローラーで開く機能を追加
+
+**変更内容:**
+nvim-treeの`,gx`キーマップで、ファイルとフォルダで異なるアプリケーションを使い分けるように変更。
+
+| 対象 | アプリケーション |
+|------|------------------|
+| ファイル | Chrome |
+| フォルダ | Windows Explorer |
+
+**パス変換:**
+`wslpath -w`により、両方のケースで適切に変換される:
+- WSL上: `/home/banister/foo` → `\\wsl$\kali-linux\home\banister\foo`
+- Windows上: `/mnt/c/Users/foo` → `C:\Users\foo`
+
+**ファイル:** nvim-tree.lua:87-100
+
+### `:MarkText`コマンドをMarkTextからMarkdown Viewerに変更
+
+MarkTextは開くだけで「保存しますか？」と聞かれる既知バグがあったため、軽量なMarkdown Viewerに乗り換え。
+
+| 変更前 | 変更後 |
+|--------|--------|
+| `MarkText.exe` | `/mnt/c/Users/yuhei/AppData/Local/Programs/Markdown Viewer/Markdown Viewer.exe` |
+
+**インストール:**
+```powershell
+winget install ElgibeSolutions.MarkdownViewer
+```
+
+**ファイル:** mark-text-exe.lua:12-14

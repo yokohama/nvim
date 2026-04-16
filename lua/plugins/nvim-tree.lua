@@ -84,14 +84,30 @@ return {
           end
         end, { buffer = bufnr, desc = "Add to Avante Selected Files" })
 
-        -- ,gx: ファイルをChromeで開く（WSL2用）
+        -- ,np: フルパスをクリップボードにコピー（WSL2用）
+        vim.keymap.set('n', ',np', function()
+          local node = api.tree.get_node_under_cursor()
+          if node and node.absolute_path then
+            vim.fn.system('echo -n "' .. node.absolute_path .. '" | clip.exe')
+            vim.notify("Copied: " .. node.absolute_path, vim.log.levels.INFO)
+          end
+        end, { buffer = bufnr, desc = "Copy full path to clipboard" })
+
+        -- ,gx: ファイルをChromeで開く、フォルダはExplorerで開く（WSL2用）
         vim.keymap.set('n', ',gx', function()
           local node = api.tree.get_node_under_cursor()
           if node and node.absolute_path then
             local win_path = vim.fn.system('wslpath -w "' .. node.absolute_path .. '"'):gsub('\n', '')
-            vim.fn.jobstart({'/mnt/c/Program Files/Google/Chrome/Application/chrome.exe', win_path}, {detach = true})
+            -- isdirectory()はシンボリックリンクを解決して判定する
+            if vim.fn.isdirectory(node.absolute_path) == 1 then
+              -- フォルダの場合はWindowsエクスプローラーで開く
+              vim.fn.jobstart({'explorer.exe', win_path}, {detach = true})
+            else
+              -- ファイルの場合はChromeで開く
+              vim.fn.jobstart({'/mnt/c/Program Files/Google/Chrome/Application/chrome.exe', win_path}, {detach = true})
+            end
           end
-        end, { buffer = bufnr, desc = "Open in Chrome" })
+        end, { buffer = bufnr, desc = "Open in Chrome/Explorer" })
       end,
 
       actions = {

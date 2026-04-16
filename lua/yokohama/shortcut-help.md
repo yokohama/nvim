@@ -10,7 +10,8 @@
 ## Tree
 | Key  | Description      |
 |------|------------------|
-| `,gx` | Open file with Chrome when excute on file name in tree. |
+| `,gx` | Open file with Chrome when excute on PDF file name in tree. |
+| `,np` | Copy file/directory path when excute on file name in tree. |
 
 ## Toggle
 | Key   | Description          |
