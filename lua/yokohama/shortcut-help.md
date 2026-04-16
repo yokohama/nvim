@@ -5,12 +5,12 @@
 |------|------------------|
 | `,n` | NvimTree toggle  |
 | `,h` | This help        |
-| `,gx` | Open page with Chrome when excute on url in text area. |
+| `,gx` | Open url with Chrome when excute on url in text area. |
 
 ## Tree
 | Key  | Description      |
 |------|------------------|
-| `,gx` | Open file with Chrome when excute on PDF file name in tree. |
+| `,gx` | Open url with Chrome when excute on PDF file name in tree. |
 | `,np` | Copy file/directory path when excute on file name in tree. |
 
 ## Toggle
@@ -30,6 +30,14 @@
 | Key      | Description      |
 |----------|------------------|
 | `Ctrl+]` | Switch Toggles   |
+
+## LSP
+| Key       | Description              |
+|-----------|--------------------------|
+| `Shift+k` | Hover info               |
+| `Tab`     | Trigger completion       |
+| `Ctrl+j`  | Next completion item     |
+| `Ctrl+k`  | Previous completion item |
 
 ## Command
 | Command       | Description                                                             |

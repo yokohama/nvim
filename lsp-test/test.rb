@@ -30,3 +30,9 @@ puts message.upcase
 # テスト: Arrayメソッドの補完
 numbers = [1, 2, 3, 4, 5]
 puts numbers.map { |n| n * 2 }
+
+sprintf("%s", "test")   # フォーマット指定子の説明が長い
+
+File.open("test.txt")   # オプションが多い
+[1,2,3].inject(:+)      # reduce/inject
+"hello".gsub(/l/, "L")  # 正規表現置換

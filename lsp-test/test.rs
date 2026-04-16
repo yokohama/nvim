@@ -42,3 +42,7 @@ fn main() {
     // テスト: 未使用変数の警告
     let unused_var = "unused";
 }
+
+  let v: Vec<i32> = vec![1, 2, 3];
+  let s: String = String::from("hello");
+  let opt: Option<i32> = Some(42);

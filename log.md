@@ -458,3 +458,86 @@ winget install ElgibeSolutions.MarkdownViewer
 ```
 
 **ファイル:** mark-text-exe.lua:12-14
+
+## 2026-04-16
+
+### nvim-treeの`,gx`をWindows既定アプリで開くように変更
+
+**変更内容:**
+PDFはChromeで開いていたが、.xlsx等のOfficeファイルも対応するため、Windows既定アプリで開くように変更。
+
+| 変更前 | 変更後 |
+|--------|--------|
+| `chrome.exe` | `cmd.exe /c start` |
+
+これにより:
+- `.xlsx` → Excel
+- `.docx` → Word
+- `.pdf` → 既定のPDFビューア
+
+**ファイル:** nvim-tree.lua:106-107
+
+### shortcut-help.mdにLSPセクションを追加
+
+LSPキーマップを忘れやすいため、ヘルプに追記。
+
+| Key | Description |
+|-----|-------------|
+| `Shift+k` | Hover info |
+| `Tab` | Trigger completion |
+| `Ctrl+j` | Next completion item |
+| `Ctrl+k` | Previous completion item |
+
+**ファイル:** shortcut-help.md:34-41
+
+### WSL内にDart SDKをインストール
+
+**問題:**
+Dartファイルで`K`を押すと、LSP hoverではなくLinuxのmanページ(`man string(3)`)が表示されていた。
+原因はdartlsがコメントアウトされており、Windows側のDart SDK(`/mnt/c/Users/yuhei/develop/flutter/bin/dart`)は改行コード問題で動作しなかったため。
+
+**解決:**
+WSL内にDart SDKをインストール。
+
+```bash
+wget https://storage.googleapis.com/dart-archive/channels/stable/release/latest/sdk/dartsdk-linux-x64-release.zip -O /tmp/dart.zip
+sudo unzip -o /tmp/dart.zip -d /usr/lib
+echo 'export PATH="/usr/lib/dart-sdk/bin:$PATH"' >> ~/.zshrc
+```
+
+PATHの先頭に追加することで、Windows側のdartより優先される。
+
+### dartlsを有効化
+
+lsp.luaでコメントアウトされていたdartlsを有効化。
+
+| 変更 | 行 |
+|------|-----|
+| `vim.lsp.config('dartls', {...})` のコメント解除 | lsp.lua:99-111 |
+| `vim.lsp.enable('dartls')` のコメント解除 | lsp.lua:150 |
+
+**ステータス:** 完了
+
+### dartlsがexit code 127で起動しない問題を修正
+
+**症状:**
+Dartファイルで`K`を押すとLSP hoverではなくmanページ（スプリット）が表示される。
+`:lua vim.lsp.get_clients()`が空。
+
+**原因:**
+手動で`vim.lsp.start()`を実行すると以下のエラー:
+```
+Client dartls quit with exit code 127 and signal 0
+```
+
+exit code 127 = コマンドが見つからない。
+`.zshrc`でPATHに`/usr/lib/dart-sdk/bin`を追加していたが、Neovimの起動時に反映されていなかった。
+
+**解決:**
+lsp.luaでdartのフルパスを指定。
+
+| 変更前 | 変更後 |
+|--------|--------|
+| `cmd = { 'dart', 'language-server', '--protocol=lsp' }` | `cmd = { '/usr/lib/dart-sdk/bin/dart', 'language-server', '--protocol=lsp' }` |
+
+**ファイル:** lsp.lua:101

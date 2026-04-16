@@ -96,20 +96,19 @@ return {
       -- Ruby
       vim.lsp.config('solargraph', { capabilities = capabilities })
 
-      -- TODO: Dart (Flutter) - WSL内にDart SDKをインストール後に有効化
-      -- see: log.md (2026-04-06)
-      -- vim.lsp.config('dartls', {
-      --   cmd = { 'dart', 'language-server', '--protocol=lsp' },
-      --   filetypes = { 'dart' },
-      --   root_markers = { 'pubspec.yaml' },
-      --   capabilities = capabilities,
-      --   settings = {
-      --     dart = {
-      --       completeFunctionCalls = true,
-      --       showTodos = true,
-      --     }
-      --   }
-      -- })
+      -- Dart (Flutter)
+      vim.lsp.config('dartls', {
+        cmd = { '/usr/lib/dart-sdk/bin/dart', 'language-server', '--protocol=lsp' },
+        filetypes = { 'dart' },
+        root_markers = { 'pubspec.yaml' },
+        capabilities = capabilities,
+        settings = {
+          dart = {
+            completeFunctionCalls = true,
+            showTodos = true,
+          }
+        }
+      })
 
       -- Rust
       vim.lsp.config('rust_analyzer', {
@@ -147,7 +146,7 @@ return {
       vim.lsp.enable('pylsp')
       vim.lsp.enable('solargraph')
       vim.lsp.enable('rust_analyzer')
-      -- vim.lsp.enable('dartls')  -- TODO: WSL内にDart SDKインストール後に有効化
+      vim.lsp.enable('dartls')
 
       -- Diagnostics設定
       vim.diagnostic.config({
