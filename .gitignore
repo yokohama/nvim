@@ -1,2 +1,11 @@
 plugin/packer_compiled.lua
 lazy-lock.json
+
+# ビルド成果物
+lsp-test/target/
+
+# 作業ログ（環境固有）
+log.md
+
+# Claude Code設定（環境固有）
+.claude/
