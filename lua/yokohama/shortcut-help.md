@@ -35,6 +35,7 @@
 | Key       | Description              |
 |-----------|--------------------------|
 | `Shift+k` | Hover info               |
+| `Shift+k` x 2 | into Hover window. you can scroll use j/k |
 | `Tab`     | Trigger completion       |
 | `Ctrl+j`  | Next completion item     |
 | `Ctrl+k`  | Previous completion item |

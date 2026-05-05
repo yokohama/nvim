@@ -59,6 +59,7 @@ return {
               deleted = "",
               ignored = "◌",
             },
+            modified = "●",
           },
         },
       },
@@ -70,6 +71,12 @@ return {
         enable = true,
         ignore = false,
         timeout = 400,
+      },
+      -- 未保存ファイルの表示
+      modified = {
+        enable = true,
+        show_on_dirs = true,
+        show_on_open_dirs = true,
       },
       -- キーマッピングを追加
       on_attach = function(bufnr)
