@@ -88,7 +88,7 @@ return {
         vim.keymap.set('n', ',np', function()
           local node = api.tree.get_node_under_cursor()
           if node and node.absolute_path then
-            vim.fn.system('echo -n "' .. node.absolute_path .. '" | clip.exe')
+            vim.fn.system('powershell.exe -command "Set-Clipboard -Value \'' .. node.absolute_path:gsub("'", "''") .. '\'"')
             vim.notify("Copied: " .. node.absolute_path, vim.log.levels.INFO)
           end
         end, { buffer = bufnr, desc = "Copy full path to clipboard" })
