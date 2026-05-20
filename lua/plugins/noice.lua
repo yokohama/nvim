@@ -111,6 +111,11 @@ return {
 
     -- ビュー設定
     views = {
+      -- vim.ui.input を画面中央のポップアップで表示（nvim-tree等）
+      cmdline_input = {
+        view = "cmdline_popup",
+        relative = "editor",
+      },
       -- コマンドラインポップアップのカスタマイズ
       cmdline_popup = {
         position = {
