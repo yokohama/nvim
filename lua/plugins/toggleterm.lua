@@ -53,11 +53,12 @@ return {
       end
     end
 
-    -- 新しいターミナルを作成
-    _G._add_terminal = function()
+    -- 新しいターミナルを作成（dirを指定可能）
+    _G._add_terminal = function(dir)
       local num = #terminals + 1
       local term = Terminal:new({
         direction = "float",
+        dir = dir or nil,
         float_opts = {
           border = "rounded",
           width = math.floor(vim.o.columns * 0.7),

@@ -71,13 +71,39 @@ return {
           end
         end, { buffer = bufnr, desc = "Copy full path to clipboard" })
 
+        -- ,t: フォルダならそのフォルダでターミナルを開く
+        vim.keymap.set('n', ',t', function()
+          local node = api.tree.get_node_under_cursor()
+          if node and node.absolute_path and vim.fn.isdirectory(node.absolute_path) == 1 then
+            _G._add_terminal(node.absolute_path)
+          end
+        end, { buffer = bufnr, desc = "Open terminal in folder" })
+
         -- ,gx: ファイルをChromeで開く、フォルダはExplorerで開く（WSL2用）
         vim.keymap.set('n', ',gx', function()
           local node = api.tree.get_node_under_cursor()
           if node and node.absolute_path then
-            local win_path = vim.fn.system('wslpath -w "' .. node.absolute_path .. '"'):gsub('\n', '')
+            local path = node.absolute_path
+            -- CSVファイルの場合、BOMがなければ追加
+            if path:match("%.csv$") then
+              local f = io.open(path, "rb")
+              if f then
+                local head = f:read(3) or ""
+                local content = f:read("*a") or ""
+                f:close()
+                if head ~= "\xEF\xBB\xBF" then
+                  f = io.open(path, "wb")
+                  if f then
+                    f:write("\xEF\xBB\xBF" .. head .. content)
+                    f:close()
+                    vim.notify("BOM added: " .. vim.fn.fnamemodify(path, ":t"), vim.log.levels.INFO)
+                  end
+                end
+              end
+            end
+            local win_path = vim.fn.system('wslpath -w "' .. path .. '"'):gsub('\n', '')
             -- isdirectory()はシンボリックリンクを解決して判定する
-            if vim.fn.isdirectory(node.absolute_path) == 1 then
+            if vim.fn.isdirectory(path) == 1 then
               -- フォルダの場合はWindowsエクスプローラーで開く
               vim.fn.jobstart({'explorer.exe', win_path}, {detach = true})
             else
