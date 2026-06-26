@@ -71,19 +71,33 @@ vim.api.nvim_create_user_command('D', function()
     -- NvimTreeを開く
     vim.cmd('NvimTreeOpen')
 
-    -- 編集エリアに移動してから右側にターミナルを作成
+    -- 編集エリアに移動
     vim.cmd('wincmd l')
+
+    -- 真ん中のバッファを編集不可に
+    vim.bo.buftype = 'nofile'
+    vim.bo.modifiable = false
+    vim.bo.buflisted = false
+
+    -- 右側にターミナルを作成
     vim.cmd('belowright vnew')
 
-    -- Claude Code用ターミナルのマーカーを設定（TermOpenより前に設定）
+    local term_chan = vim.fn.termopen('env TERM=xterm-256color $SHELL')
+
+    -- termopen後にバッファ番号を取得（termopenが新しいターミナルバッファを作成するため）
     local buf = vim.api.nvim_get_current_buf()
     vim.b[buf].claude_terminal = true
+    vim.api.nvim_set_option_value('scrollback', 2000, { buf = buf })
 
-    local term_chan = vim.fn.termopen('env TERM=xterm $SHELL')
-
-    -- claudeコマンドを実行
+    -- tmux mainセッションを確認・作成・アタッチ、そしてclaude実行
     vim.defer_fn(function()
-        vim.fn.chansend(term_chan, 'claude\n')
+        local cmd = [[
+tmux kill-session -t main
+tmux new-session -d -s main
+tmux send-keys -t main 'claude' Enter
+tmux attach -t main
+]]
+        vim.fn.chansend(term_chan, cmd)
     end, 100)
 
     vim.cmd('startinsert')
