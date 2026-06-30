@@ -40,3 +40,16 @@ vim.keymap.set('n', '<leader>m', function()
   vim.cmd('normal! G')
 end, { noremap = true, silent = true, desc = 'Open :messages in buffer' })
 
+-- gx拡張: .onionはTor経由、それ以外はデフォルト
+vim.keymap.set('n', 'gx', function()
+  local url = vim.fn.expand('<cfile>')
+  if url:match('%.onion') then
+    -- .onionはKali側のTor Browserで開く（既存プロセスがあれば新規タブで開く）
+    vim.fn.jobstart({'tor-browser', '--allow-remote', '--new-tab', url}, {detach = true})
+    vim.notify('Opening in Tor Browser: ' .. url, vim.log.levels.INFO)
+  else
+    -- デフォルトの挙動
+    vim.ui.open(url)
+  end
+end, { noremap = true, silent = true, desc = 'Open URL (Tor for .onion)' })
+

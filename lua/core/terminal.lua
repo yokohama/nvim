@@ -82,11 +82,11 @@ vim.api.nvim_create_user_command('D', function()
     -- 右側にターミナルを作成
     vim.cmd('belowright vnew')
 
-    local term_chan = vim.fn.termopen('env TERM=xterm-256color $SHELL')
-
-    -- termopen後にバッファ番号を取得（termopenが新しいターミナルバッファを作成するため）
+    -- termopen()の前にフラグを設定（TermOpen autocmdより先に設定する必要がある）
     local buf = vim.api.nvim_get_current_buf()
     vim.b[buf].claude_terminal = true
+
+    local term_chan = vim.fn.termopen('env TERM=xterm-256color $SHELL')
     vim.api.nvim_set_option_value('scrollback', 2000, { buf = buf })
 
     -- tmux mainセッションを確認・作成・アタッチ、そしてclaude実行
