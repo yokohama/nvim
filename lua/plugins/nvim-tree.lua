@@ -79,6 +79,24 @@ return {
           end
         end, { buffer = bufnr, desc = "Open terminal in folder" })
 
+        -- ,p: フォルダ上ならそのフォルダにpentest-memoを作成してトグル
+        vim.keymap.set('n', ',p', function()
+          local node = api.tree.get_node_under_cursor()
+          if node and node.absolute_path and vim.fn.isdirectory(node.absolute_path) == 1 then
+            local pentest_memo = require("yokohama.pentest-memo")
+            pentest_memo.toggle(node.absolute_path)
+          end
+        end, { buffer = bufnr, desc = "Toggle Pentest Memo in folder" })
+
+        -- ,P: フォルダ上ならそのフォルダにpentest-memoを作成してフォーカス
+        vim.keymap.set('n', ',P', function()
+          local node = api.tree.get_node_under_cursor()
+          if node and node.absolute_path and vim.fn.isdirectory(node.absolute_path) == 1 then
+            local pentest_memo = require("yokohama.pentest-memo")
+            pentest_memo.focus(node.absolute_path)
+          end
+        end, { buffer = bufnr, desc = "Focus Pentest Memo in folder" })
+
         -- ,gx: ファイルをChromeで開く、フォルダはExplorerで開く（WSL2用）
         vim.keymap.set('n', ',gx', function()
           local node = api.tree.get_node_under_cursor()
