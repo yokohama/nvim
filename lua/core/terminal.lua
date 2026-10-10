@@ -89,13 +89,15 @@ vim.api.nvim_create_user_command('D', function()
     local term_chan = vim.fn.termopen('env TERM=xterm-256color $SHELL')
     vim.api.nvim_set_option_value('scrollback', 2000, { buf = buf })
 
-    -- tmux mainセッションを確認・作成・アタッチ、そしてclaude実行
+    -- tmux セッションを作成・アタッチ、そしてclaude実行
+    -- セッション名: {カレントディレクトリ名}-{短縮UUID}
+    -- 先頭のドットを除去（tmuxが.をペイン指定と解釈するため）
     vim.defer_fn(function()
         local cmd = [[
-tmux kill-session -t main
-tmux new-session -d -s main
-tmux send-keys -t main 'claude' Enter
-tmux attach -t main
+SESSION_NAME="$(basename "$PWD" | sed 's/^\.//')-$(cat /proc/sys/kernel/random/uuid | cut -c1-8)"
+tmux new-session -d -s "$SESSION_NAME"
+tmux send-keys -t "$SESSION_NAME" 'claude' Enter
+tmux attach -t "$SESSION_NAME"
 ]]
         vim.fn.chansend(term_chan, cmd)
     end, 100)
