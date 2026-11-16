@@ -13,6 +13,8 @@
 |-------|------------------|
 | `,gx` | Open url with Chrome when excute on PDF file name in tree. |
 | `,np` | Copy file/directory path when excute on file name in tree. |
+| `,mmd` | mmdをフロートで開きプレビュー |
+| `,iv` | windowsのクリップボード画像をホルダにファイル保存 |
 | `a`   | ファイル作成 |
 | `a`   | `hoge/` 等末尾に `/` をつけるとフォルダ作成 |
 | `c`   | ファイルをコピー。`p`でファイル複製 |

@@ -107,6 +107,42 @@ return {
           end
         end, { buffer = bufnr, desc = "Preview .mmd in float" })
 
+        -- ,iv: クリップボード画像をフォルダに保存（WSL2用）
+        vim.keymap.set('n', ',iv', function()
+          local node = api.tree.get_node_under_cursor()
+          if not node or not node.absolute_path or vim.fn.isdirectory(node.absolute_path) ~= 1 then
+            vim.notify("フォルダの上で実行してください", vim.log.levels.WARN)
+            return
+          end
+
+          local dest_dir = node.absolute_path
+          local filename = os.date("%Y%m%d-%H%M%S") .. ".png"
+          local dest_path = dest_dir .. "/" .. filename
+          local tmp_wsl = "/mnt/c/temp/clip.png"
+
+          vim.fn.mkdir("/mnt/c/temp", "p")
+
+          local ps_cmd = "powershell.exe -command '"
+            .. "Add-Type -AssemblyName System.Windows.Forms; "
+            .. [[[System.Windows.Forms.Clipboard]::GetImage().Save("C:\temp\clip.png")]]
+            .. "'"
+
+          vim.fn.system(ps_cmd)
+          if vim.v.shell_error ~= 0 then
+            vim.notify("クリップボードに画像がありません", vim.log.levels.ERROR)
+            return
+          end
+
+          vim.fn.system('mv "' .. tmp_wsl .. '" "' .. dest_path .. '"')
+          if vim.v.shell_error ~= 0 then
+            vim.notify("ファイルの移動に失敗しました", vim.log.levels.ERROR)
+            return
+          end
+
+          api.tree.reload()
+          vim.notify("Saved: " .. filename, vim.log.levels.INFO)
+        end, { buffer = bufnr, desc = "Paste clipboard image to folder" })
+
         -- ,gx: ファイルをChromeで開く、フォルダはExplorerで開く（WSL2用）
         vim.keymap.set('n', ',gx', function()
           local node = api.tree.get_node_under_cursor()
