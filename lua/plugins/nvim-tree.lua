@@ -97,6 +97,16 @@ return {
           end
         end, { buffer = bufnr, desc = "Focus Pentest Memo in folder" })
 
+        -- ,mmd: .mmdファイルをフロートビューアで表示
+        vim.keymap.set('n', ',mmd', function()
+          local node = api.tree.get_node_under_cursor()
+          if node and node.absolute_path and node.absolute_path:match("%.mmd$") then
+            require("yokohama.mmdview").show(node.absolute_path)
+          else
+            vim.notify(".mmd ファイルの上で実行してください", vim.log.levels.WARN)
+          end
+        end, { buffer = bufnr, desc = "Preview .mmd in float" })
+
         -- ,gx: ファイルをChromeで開く、フォルダはExplorerで開く（WSL2用）
         vim.keymap.set('n', ',gx', function()
           local node = api.tree.get_node_under_cursor()

@@ -40,6 +40,7 @@ require("yokohama.img-paste")
 require("yokohama.pentest-memo").setup()
 require("yokohama.shortcut-help").setup()
 require("yokohama.md").setup()
+require("yokohama.mmdview").setup()
 
 -- アクティブ/非アクティブ window 背景色制御
 local function set_window_background()
